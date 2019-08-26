@@ -21,6 +21,7 @@ public class HttpUtil {
 
         Connection connection = Jsoup.connect(url);
         connection.header(USER_AGENT,USER_AGENT_VALUE);
+        connection.header("accept-language", "zh-cn");
         Connection.Response rs = connection.execute();
         return Jsoup.parse(rs.body());
     }
