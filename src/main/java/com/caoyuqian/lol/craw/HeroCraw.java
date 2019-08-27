@@ -21,9 +21,30 @@ import java.util.stream.Collectors;
 @Component
 public class HeroCraw {
 
-    public void craw(String url) throws IOException {
+    public List<Hero> craw(String url) throws IOException {
+        String urls = "https://www.op.gg/champion/statistics";
+        //辅助
+        List<Hero> sups = crawSupportHero(url);
+        //adc
+        List<Hero> adcs = crawAdcHero(url);
+        //打野
+        List<Hero> jugs = crawJungleHero(url);
+        //中单
+        List<Hero> mids = crawMidHero(url);
+        //上单
+        List<Hero> tops = crawTopHero(url);
+        sups.removeAll(adcs);
+        sups.addAll(adcs);
 
+        sups.removeAll(jugs);
+        sups.addAll(jugs);
 
+        sups.removeAll(mids);
+        sups.addAll(mids);
+
+        sups.removeAll(tops);
+        sups.addAll(tops);
+        return sups;
     }
 
     public static void main(String[] args) throws IOException {
@@ -36,142 +57,246 @@ public class HeroCraw {
 
     }
 
+
+
+
+
     /**
      * 爬取所有辅助英雄
+     *
      * @param url
      * @return
      * @throws IOException
      */
-    public List<Hero> crawSupportHero(String url) throws IOException {
+    public static List<Hero> crawSupportHero(String url) throws IOException {
         Document document = HttpUtil.get(url);
         List<Hero> heroes = new ArrayList<>();
-        Element supE = document.select("tbody.champion-trend-tier-SUPPORT").get(0);
-        Elements supes = supE.select("div.champion-index-table__name");
 
-        List<String> sups = supes.stream().map(Element::text).collect(Collectors.toList());
+        Element tbody = document.select("tbody.champion-trend-tier-SUPPORT").get(0);
+        Elements nameEs = tbody.select("div.champion-index-table__name");
+        Elements posEs = tbody.select("div.champion-index-table__position");
 
-        for (String s: sups
-        ) {
+        for (int i = 0; i < nameEs.size(); i++) {
+            Element element = nameEs.get(i);
+            String name = element.text();
+            Element pose = posEs.get(i);
+            String pos = pose.text();
+            String[] poss = pos.split(", ");
+
             Hero hero = new Hero();
-            hero.setHName(s);
-            hero.setAssist(true);
+            hero.setHName(name);
+            for (int j = 0; j < poss.length; j++
+            ) {
+                if (poss[j].equals("辅助")) {
+                    hero.setAssist(true);
+                } else if (poss[j].equals("Bottom")) {
+                    hero.setAd(true);
+                } else if (poss[j].equals("中单")) {
+                    hero.setMid(true);
+                } else if (poss[j].equals("打野")) {
+                    hero.setJungle(true);
+                } else if (poss[j].equals("上单")) {
+                    hero.setTop(true);
+                }
+            }
             heroes.add(hero);
         }
         return heroes;
     }
+
     /**
      * 爬取所有ADC英雄
+     *
      * @param url
      * @return
      */
-    public List<Hero> crawAdcHero(String url) throws IOException {
+    public static List<Hero> crawAdcHero(String url) throws IOException {
         Document document = HttpUtil.get(url);
         List<Hero> heroes = new ArrayList<>();
 
         Element adcEs = document.select("tbody.champion-trend-tier-ADC").get(0);
-        Elements adcE = adcEs.select("div.champion-index-table__name");
-        List<String> adcs = adcE.stream().map(Element::text).collect(Collectors.toList());
+        Elements nameEs = adcEs.select("div.champion-index-table__name");
+        Elements posEs = adcEs.select("div.champion-index-table__position");
 
-        for (String s :adcs
-        ) {
+        for (int i = 0; i < nameEs.size(); i++) {
+            Element element = nameEs.get(i);
+            String name = element.text();
+            Element pose = posEs.get(i);
+            String pos = pose.text();
+            String[] poss = pos.split(", ");
+
             Hero hero = new Hero();
-            hero.setHName(s);
-            hero.setAd(true);
+            hero.setHName(name);
+            for (int j = 0; j < poss.length; j++
+            ) {
+                if (poss[j].equals("辅助")) {
+                    hero.setAssist(true);
+                } else if (poss[j].equals("Bottom")) {
+                    hero.setAd(true);
+                } else if (poss[j].equals("中单")) {
+                    hero.setMid(true);
+                } else if (poss[j].equals("打野")) {
+                    hero.setJungle(true);
+                } else if (poss[j].equals("上单")) {
+                    hero.setTop(true);
+                }
+            }
             heroes.add(hero);
         }
         return heroes;
     }
+
     /**
      * 爬取所有中单英雄
+     *
      * @param url
      * @return
      * @throws IOException
      */
-    public List<Hero> crawMidHero(String url) throws IOException {
+    public static List<Hero> crawMidHero(String url) throws IOException {
 
         Document document = HttpUtil.get(url);
         List<Hero> heroes = new ArrayList<>();
 
         //爬取中单位置的英雄
-        Elements midEs = document.select("tbody.champion-trend-tier-MID");
-        Element mide = midEs.get(0);
-        Elements mides = mide.select("div.champion-index-table__name");
-        List<String> mids = mides.stream().map(Element::text).collect(Collectors.toList());
+        Element midEs = document.select("tbody.champion-trend-tier-MID").get(0);
+        Elements nameEs = midEs.select("div.champion-index-table__name");
+        Elements posEs = midEs.select("div.champion-index-table__position");
 
-        for (String s: mids
-        ) {
+        for (int i = 0; i < nameEs.size(); i++) {
+            Element element = nameEs.get(i);
+            String name = element.text();
+            Element pose = posEs.get(i);
+            String pos = pose.text();
+            String[] poss = pos.split(", ");
+
             Hero hero = new Hero();
-            hero.setHName(s);
-            hero.setMid(true);
+            hero.setHName(name);
+            for (int j = 0; j < poss.length; j++
+            ) {
+                if (poss[j].equals("辅助")) {
+                    hero.setAssist(true);
+                } else if (poss[j].equals("Bottom")) {
+                    hero.setAd(true);
+                } else if (poss[j].equals("中单")) {
+                    hero.setMid(true);
+                } else if (poss[j].equals("打野")) {
+                    hero.setJungle(true);
+                } else if (poss[j].equals("上单")) {
+                    hero.setTop(true);
+                }
+            }
             heroes.add(hero);
-
         }
         return heroes;
     }
+
     /**
      * 爬取所有打野英雄
+     *
      * @param url
      * @return
      * @throws IOException
      */
-    public List<Hero> crawJungleHero(String url) throws IOException {
+    public static List<Hero> crawJungleHero(String url) throws IOException {
         Document document = HttpUtil.get(url);
         List<Hero> heroes = new ArrayList<>();
         //爬取打野位置的英雄
-        Elements junglesE = document.select("tbody.champion-trend-tier-JUNGLE");
-        Element tbody_j = junglesE.get(0);
-        Elements jnames = tbody_j.select("div.champion-index-table__name");
-        List<String> jugs = jnames.stream().map(Element::text).collect(Collectors.toList());
-        for (String s : jugs
-        ) {
+        Element junglesE = document.select("tbody.champion-trend-tier-JUNGLE").get(0);
+        Elements nameEs = junglesE.select("div.champion-index-table__name");
+        Elements posEs = junglesE.select("div.champion-index-table__position");
+
+        for (int i = 0; i < nameEs.size(); i++) {
+            Element element = nameEs.get(i);
+            String name = element.text();
+            Element pose = posEs.get(i);
+            String pos = pose.text();
+            String[] poss = pos.split(", ");
+
             Hero hero = new Hero();
-            hero.setHName(s);
-            hero.setJungle(true);
+            hero.setHName(name);
+            for (int j = 0; j < poss.length; j++
+            ) {
+                if (poss[j].equals("辅助")) {
+                    hero.setAssist(true);
+                } else if (poss[j].equals("Bottom")) {
+                    hero.setAd(true);
+                } else if (poss[j].equals("中单")) {
+                    hero.setMid(true);
+                } else if (poss[j].equals("打野")) {
+                    hero.setJungle(true);
+                } else if (poss[j].equals("上单")) {
+                    hero.setTop(true);
+                }
+            }
             heroes.add(hero);
         }
         return heroes;
     }
+
     /**
      * 爬取所有上单位置的英雄
+     *
      * @param url
      * @return
      * @throws IOException
      */
-    public List<Hero> crawTopHero(String url) throws IOException {
+    public static List<Hero> crawTopHero(String url) throws IOException {
         Document document = HttpUtil.get(url);
         List<Hero> heroes = new ArrayList<>();
         //上单英雄
         Elements select = document.select("tbody.champion-trend-tier-TOP");
-        Element element = select.get(0);
-        //爬取英雄名称
-        Elements select1 = element.select("div.champion-index-table__name");
-        List<String> tops = select1.stream().map(Element::text).collect(Collectors.toList());
-        for (String name: tops
-        ) {
+        Element tope = select.get(0);
+        Elements nameEs = tope.select("div.champion-index-table__name");
+        Elements posEs = tope.select("div.champion-index-table__position");
+
+        for (int i = 0; i < nameEs.size(); i++) {
+            Element element = nameEs.get(i);
+            String name = element.text();
+            Element pose = posEs.get(i);
+            String pos = pose.text();
+            String[] poss = pos.split(", ");
+
             Hero hero = new Hero();
             hero.setHName(name);
-            hero.setTop(true);
+            for (int j = 0; j < poss.length; j++
+            ) {
+                if (poss[j].equals("辅助")) {
+                    hero.setAssist(true);
+                } else if (poss[j].equals("Bottom")) {
+                    hero.setAd(true);
+                } else if (poss[j].equals("中单")) {
+                    hero.setMid(true);
+                } else if (poss[j].equals("打野")) {
+                    hero.setJungle(true);
+                } else if (poss[j].equals("上单")) {
+                    hero.setTop(true);
+                }
+            }
             heroes.add(hero);
         }
         return heroes;
     }
+
     /**
      * 爬取英雄名称
+     *
      * @return
      * @throws IOException
      */
-    public List<String> crawHeroName(String url) throws IOException {
+    public static List<String> crawHeroName(String url) throws IOException {
         Document document = HttpUtil.get(url);
         Elements namesElement = document.select("div.champion-index__champion-item__name");
         List<String> names = namesElement.stream().map(Element::text).collect(Collectors.toList());
         return names;
     }
+
     /**
      * 获取所有英雄详情页的url
      *
      * @return
      */
-    public List<String> getAllHeroDetilUrl() throws IOException {
+    public static List<String> getAllHeroDetilUrl() throws IOException {
         List<String> urls = new ArrayList<>();
         String baseUrl = "https://www.op.gg";
         Document document = HttpUtil.get("https://www.op.gg/champion/statistics");
