@@ -1,7 +1,10 @@
 package com.caoyuqian.lol;
 
 import com.caoyuqian.lol.craw.LadderCraw;
+import com.caoyuqian.lol.craw.StatisticsTierCraw;
 import com.caoyuqian.lol.entity.Ladder;
+import com.caoyuqian.lol.model.StatisticsTier;
+import com.caoyuqian.lol.service.StatisticsTierService;
 import com.caoyuqian.lol.utils.HttpUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -27,6 +30,11 @@ public class LolApplicationTests {
 
     @Autowired
     private LadderCraw ladderCraw;
+    @Autowired
+    private StatisticsTierCraw statisticsTierCraw;
+    @Autowired
+    private StatisticsTierService statisticsTierService;
+
     @Test
     public void contextLoads() throws IOException {
         String url = "https://www.op.gg/ranking/ladder/page=1";
@@ -45,12 +53,12 @@ public class LolApplicationTests {
         List<String> nameList = names.stream().map(Element::text).collect(Collectors.toList());
         List<String> levelList = levels.stream().map(Element::text).collect(Collectors.toList());
         List<String> lpList = lps.stream().map(element -> {
-            return StringUtils.substringBefore(element.text()," LP").replaceAll(",","");
+            return StringUtils.substringBefore(element.text(), " LP").replaceAll(",", "");
         }).collect(Collectors.toList());
         List<String> winRatioList = winRatios.stream().map(Element::text).collect(Collectors.toList());
         List<String> lvList = lvs.stream().map(element -> {
-            if (element.text().startsWith("Lv.")){
-                return StringUtils.substringAfter(element.text(),"Lv.");
+            if (element.text().startsWith("Lv.")) {
+                return StringUtils.substringAfter(element.text(), "Lv.");
             }
             return element.text();
         }).collect(Collectors.toList());
@@ -76,7 +84,6 @@ public class LolApplicationTests {
     }
 
 
-
     @Test
     public void test1() throws IOException {
         List<String> rankingList = new ArrayList<>();
@@ -93,8 +100,8 @@ public class LolApplicationTests {
         Elements names = eles.select("td.ranking-table__cell--summoner span");
         List<String> namess = names.stream().map(Element::text).collect(Collectors.toList());
         namess = namess.stream().map(name -> {
-            name = name.replace("<span>","");
-            name = name.replace("</span>","");
+            name = name.replace("<span>", "");
+            name = name.replace("</span>", "");
             return name;
         }).collect(Collectors.toList());
 
@@ -122,11 +129,17 @@ public class LolApplicationTests {
 
     @Test
     public void testCraw() throws IOException {
-        String url ="https://www.op.gg/ranking/ladder/page=";
+        String url = "https://www.op.gg/ranking/ladder/page=";
         int page = 1;
         while (page <= 20) {
-            ladderCraw.ladderCraw(url,page);
+            ladderCraw.ladderCraw(url, page);
             page++;
         }
+    }
+
+    @Test
+    public void testMongo() throws IOException {
+        List<StatisticsTier> statisticsTiers = statisticsTierCraw.get();
+        statisticsTierService.save(statisticsTiers.get(1)).subscribe();
     }
 }
