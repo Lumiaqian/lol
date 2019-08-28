@@ -9,6 +9,9 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author qian
@@ -25,15 +28,30 @@ public class StatisticsTierService {
     @Autowired
     private StatisticsTierRepository repository;
 
-    public Flux<StatisticsTier> saveAll(List<StatisticsTier> statisticsTiers){
-        repository.deleteAll().subscribe();
+    public Flux<StatisticsTier> saveAll(List<StatisticsTier> statisticsTiers) {
+
         return repository
-                .saveAll(statisticsTiers);
+                .findAll()
+                .flatMap(statisticsTier -> {
+                    log.info("查询:{}",statisticsTier.toString());
+                    StatisticsTier st = statisticsTiers.stream()
+                            .filter(s -> statisticsTier.getLevel().equals(s.getLevel()))
+                            .findAny()
+                            .get();
+                    log.info("集合中匹配到的元素：{}",st.toString());
+                    st.setId(statisticsTier.getId());
+                    return repository.save(st);
+                }).switchIfEmpty(repository.saveAll(statisticsTiers));
     }
 
-    public Mono<StatisticsTier> save(StatisticsTier statisticsTier){
-        return repository
-                .insert(statisticsTier);
+    public Mono<StatisticsTier> save(StatisticsTier statisticsTier) {
+        return repository.findByLevel(statisticsTier.getLevel())
+                .flatMap(e -> {
+                    log.info("查询：{}", e.toString());
+                    statisticsTier.setId(e.getId());
+                    return repository.save(statisticsTier);
+                }).defaultIfEmpty(statisticsTier)
+                .flatMap(s -> repository.save(statisticsTier));
 
     }
 }

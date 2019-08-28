@@ -32,6 +32,6 @@ public class TestController {
     }
     @GetMapping("/save")
     public Mono<StatisticsTier> save() throws IOException {
-        return statisticsTierService.save(statisticsTierCraw.get().get(1));
+        return statisticsTierService.save(statisticsTierCraw.get().get(2));
     }
 }
