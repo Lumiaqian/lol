@@ -48,17 +48,12 @@ public class HeroCraw {
     }
 
     public static void main(String[] args) throws IOException {
-//        String url = "https://www.op.gg/champion/aatrox/statistics";
-//        Document document = HttpUtil.get(url);
-//        Elements names = document.getElementsByClass("champion-stats-header-info__name");
-//        System.out.println(names);
-//        Elements jns = document.getElementsByClass("champion-stat__skill tip");
-//        System.out.println(jns);
+        String url = "https://www.op.gg/statistics/champion/";
+        Document document = HttpUtil.get(url);
+        Element select = document.getElementById("ChampionStatsTable");
+        System.out.println(select);
 
     }
-
-
-
 
 
     /**
