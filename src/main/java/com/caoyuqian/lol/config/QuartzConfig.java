@@ -55,10 +55,11 @@ public class QuartzConfig {
                 .storeDurably()
                 .build();
     }
-    @Bean Trigger statisticsTierCrawJobTrigger(){
+    @Bean
+    public Trigger statisticsTierCrawJobTrigger(){
         SimpleScheduleBuilder scheduleBuilder = SimpleScheduleBuilder.simpleSchedule()
                 //设置时间周期单位秒
-                .withIntervalInSeconds(60*5)
+                .withIntervalInSeconds(60*30)
                 .repeatForever();
         return TriggerBuilder.newTrigger()
                 .forJob(statisticsTierCrawJobDetail())
