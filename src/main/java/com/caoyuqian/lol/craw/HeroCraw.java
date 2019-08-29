@@ -40,22 +40,30 @@ public class HeroCraw {
 
         sups.removeAll(tops);
         sups.addAll(tops);
+
+        //获取技能
+
+
+
         return sups;
     }
 
     public static void main(String[] args) throws IOException {
-//        String url = "https://www.op.gg/champion/aatrox/statistics";
-//        Document document = HttpUtil.get(url);
-//        Elements names = document.getElementsByClass("champion-stats-header-info__name");
-//        System.out.println(names);
-//        Elements jns = document.getElementsByClass("champion-stat__skill tip");
-//        System.out.println(jns);
+        String url = "https://www.op.gg/statistics/champion/";
+        Document document = HttpUtil.get(url);
+        Element select = document.getElementById("ChampionStatsTable");
+        System.out.println(select);
 
     }
 
-
-
-
+    /**
+     * 爬取英雄技能信息
+     * @param url
+     * @return
+     */
+    public List<Hero> crawKill(String url){
+        return null;
+    }
 
     /**
      * 爬取所有辅助英雄
@@ -71,6 +79,7 @@ public class HeroCraw {
         Element tbody = document.select("tbody.champion-trend-tier-SUPPORT").get(0);
         Elements nameEs = tbody.select("div.champion-index-table__name");
         Elements posEs = tbody.select("div.champion-index-table__position");
+
 
         for (int i = 0; i < nameEs.size(); i++) {
             Element element = nameEs.get(i);
@@ -96,6 +105,7 @@ public class HeroCraw {
                 }
             }
             heroes.add(hero);
+
         }
         return heroes;
     }

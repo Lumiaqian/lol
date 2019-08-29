@@ -20,6 +20,7 @@ public class LadderCraw {
 
     /**
      * 爬取排行榜内容
+     *
      * @param url
      * @param page
      * @return
@@ -41,7 +42,6 @@ public class LadderCraw {
         //数据封装
         List<Ladder> ladders = new ArrayList<>();
         Document document = HttpUtil.get(url + page);
-
         //爬取前5名信息
         if (page == 1) {
             Elements elements = document.getElementsByClass("ranking-highest__item");
@@ -51,6 +51,7 @@ public class LadderCraw {
             Elements lps = elements.select("div.ranking-highest__tierrank b");
             Elements winRatios = elements.select("span.winratio__text");
             Elements lvs = elements.select("div.ranking-highest__level");
+
 
             rankingList = rankings.stream().map(Element::text).collect(Collectors.toList());
             nameList = names.stream().map(Element::text).collect(Collectors.toList());
@@ -66,64 +67,42 @@ public class LadderCraw {
                 return element.text();
             }).collect(Collectors.toList());
             ladders = new ArrayList<>(rankingList.size());
+
+            for (int i = 0; i < rankingList.size(); i++) {
+                Ladder ladder = Ladder.builder().name(nameList.get(i))
+                        .ranking(rankingList.get(i))
+                        .level(levelList.get(i))
+                        .lp(lpList.get(i))
+                        .lv(lvList.get(i))
+                        .winRatio(winRatioList.get(i))
+                        .build();
+
+                ladders.add(ladder);
+            }
         }
 
         //爬取第6名之后的信息
 
         //爬取排名信息
         Elements eles = document.getElementsByClass("ranking-table__row");
-
-        Elements ranks = eles.select("td.ranking-table__cell--rank");
-
-        List<String> rankss = ranks.stream().map(Element::text).collect(Collectors.toList());
-
-        rankingList.addAll(rankss);
-
-        //爬取召唤师名称
-        Elements names1 = eles.select("td.ranking-table__cell--summoner span");
-        List<String> namess = names1.stream().map(Element::text).collect(Collectors.toList());
-        namess = namess.stream().map(name -> {
-            name = name.replace("<span>", "");
-            name = name.replace("</span>", "");
-            return name;
-        }).collect(Collectors.toList());
-        nameList.addAll(namess);
-
-        //爬取召唤师段位
-        Elements dws = eles.select("td.ranking-table__cell--tier");
-        List<String> dwss = dws.stream().map(Element::text).collect(Collectors.toList());
-        levelList.addAll(dwss);
-
-        //爬取召唤师分数
-        Elements lpss = eles.select("td.ranking-table__cell--lp");
-        List<String> lpsss = lpss.stream().map(element -> {
-            return StringUtils.substringBefore(element.text(), " LP").replaceAll(",", "");
-        }).collect(Collectors.toList());
-        lpList.addAll(lpsss);
-
-        //爬取召唤师等级
-        Elements levs = eles.select("td.ranking-table__cell--level");
-        List<String> levss = levs.stream().map(Element::text).collect(Collectors.toList());
-        lvList.addAll(levss);
-
-        //爬取召唤师胜率
-        Elements winRates = eles.select("td.ranking-table__cell--winratio span");
-        List<String> winRatess = winRates.stream().map(Element::text).collect(Collectors.toList());
-        winRatioList.addAll(winRatess);
-
-        //将数据转换为对象
-        for (int i = 0; i < rankingList.size(); i++) {
-            Ladder ladder = Ladder.builder().name(nameList.get(i))
-                    .ranking(rankingList.get(i))
-                    .level(levelList.get(i))
-                    .lp(lpList.get(i))
-                    .lv(lvList.get(i))
-                    .winRatio(winRatioList.get(i))
+        List<Ladder> finalLadders = ladders;
+        eles.forEach(element -> {
+            Ladder ladder = Ladder.builder()
+                    .ranking(element.select("td.ranking-table__cell--rank").text())
+                    .name(element.select("td.ranking-table__cell--summoner span").text()
+                            .replace("<span>", "")
+                            .replace("</span>", ""))
+                    .level(element.select("td.ranking-table__cell--tier").text())
+                    .lp(StringUtils.substringBefore(element.select("td.ranking-table__cell--lp").text(),
+                            " LP").replaceAll(",", ""))
+                    .lv(element.select("td.ranking-table__cell--level").text())
+                    .winRatio(element.select("td.ranking-table__cell--winratio span").text())
                     .build();
+            finalLadders.add(ladder);
+        });
 
-            ladders.add(ladder);
-        }
-        log.info(ladders.toString());
+        ladders.addAll(finalLadders);
+        log.info(finalLadders.toString());
         return ladders;
     }
 
