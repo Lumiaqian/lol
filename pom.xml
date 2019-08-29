@@ -69,6 +69,11 @@
             <artifactId>htmlunit</artifactId>
             <version>2.36.0</version>
         </dependency>
+       <!--定时任务-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-quartz</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
