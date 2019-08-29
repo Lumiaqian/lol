@@ -6,3 +6,5 @@ spring:
       database: lol
       repositories:
         type: reactive
+
+

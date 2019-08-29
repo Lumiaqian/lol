@@ -22,12 +22,4 @@ public interface StatisticsTierRepository extends ReactiveMongoRepository<Statis
       * @Date: 2019-08-28 10:19
      **/
     Mono<StatisticsTier> findByLevel(String level);
-     /**
-       * @Param: levels
-       * @return: Flux
-       * @Author: qian
-       * @Description: 通过段位查找所有数据
-       * @Date: 2019-08-28 12:02
-      **/
-    Flux<StatisticsTier> findAllByLevel(List<String> levels);
 }

@@ -1,7 +1,6 @@
 package com.caoyuqian.lol.entity;
 
-import com.sun.javafx.beans.IDProperty;
-import jdk.nashorn.internal.ir.annotations.Ignore;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,7 +8,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 
 import java.io.Serializable;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
