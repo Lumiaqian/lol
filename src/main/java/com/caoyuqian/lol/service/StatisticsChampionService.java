@@ -22,10 +22,18 @@ import java.util.List;
 @Service
 public class StatisticsChampionService {
     @Autowired
-    private StatisticsChampionRepository statisticsChampionRepository;
+    private StatisticsChampionRepository repository;
 
     public Flux<StatisticsChampion> saveAll(List<StatisticsChampion> statisticsChampions){
-        return statisticsChampionRepository
-                .saveAll(statisticsChampions);
+        return repository
+                .findAll()
+                .flatMap(statisticsChampion -> {
+                    StatisticsChampion sc = statisticsChampions.stream()
+                            .filter(s -> statisticsChampion.getChampionName().equals(s.getChampionName()))
+                            .findAny()
+                            .get();
+                    sc.setId(statisticsChampion.getId());
+                    return repository.save(sc);
+                }).switchIfEmpty(repository.saveAll(statisticsChampions));
     }
 }

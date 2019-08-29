@@ -9,6 +9,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,12 +24,13 @@ import java.util.List;
  * @date 2019-08-27 09:59
  **/
 @Slf4j
+@Component
 public class StatisticsChampionCraw {
     private String url = "https://www.op.gg/statistics/champion/";
     private Document document;
     @Autowired
     private StatisticsChampionService statisticsChampionService;
-    private void get() throws IOException {
+    public List<StatisticsChampion> get() throws IOException {
         List<StatisticsChampion> statisticsChampions = new ArrayList<>();
         document = HttpUtil.getByHtmlUnit(url);
         Elements elements = document.select("div.ContentWrap div.Box div.Content");
@@ -53,10 +55,7 @@ public class StatisticsChampionCraw {
         });
         log.info(statisticsChampions.toString());
         log.info(String.valueOf(statisticsChampions.size()));
+        return statisticsChampions;
     }
 
-    public static void main(String[] args) throws IOException {
-        StatisticsChampionCraw statisticsChampionCraw = new StatisticsChampionCraw();
-        statisticsChampionCraw.get();
-    }
 }

@@ -1,7 +1,10 @@
 package com.caoyuqian.lol.controller;
 
+import com.caoyuqian.lol.craw.StatisticsChampionCraw;
 import com.caoyuqian.lol.craw.StatisticsTierCraw;
+import com.caoyuqian.lol.model.StatisticsChampion;
 import com.caoyuqian.lol.model.StatisticsTier;
+import com.caoyuqian.lol.service.StatisticsChampionService;
 import com.caoyuqian.lol.service.StatisticsTierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,13 +28,18 @@ public class TestController {
     private StatisticsTierCraw statisticsTierCraw;
     @Autowired
     private StatisticsTierService statisticsTierService;
+    @Autowired
+    private StatisticsChampionService statisticsChampionService;
+    @Autowired
+    private StatisticsChampionCraw statisticsChampionCraw;
 
-    @GetMapping("/saveAll")
+    @GetMapping("/st/save")
     public Flux<StatisticsTier> saveall() throws IOException {
         return statisticsTierService.saveAll(statisticsTierCraw.get());
     }
-    @GetMapping("/save")
-    public Mono<StatisticsTier> save() throws IOException {
-        return statisticsTierService.save(statisticsTierCraw.get().get(2));
+
+    @GetMapping("/sc/save")
+    public Flux<StatisticsChampion> save() throws IOException {
+        return statisticsChampionService.saveAll(statisticsChampionCraw.get());
     }
 }
