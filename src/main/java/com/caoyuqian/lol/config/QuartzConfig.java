@@ -47,22 +47,22 @@ public class QuartzConfig {
                 .build();
     }
 
-    // @Bean
-    public JobDetail StatisticsTierCrawJobDetail(){
+    @Bean
+    public JobDetail statisticsTierCrawJobDetail(){
         return JobBuilder.newJob(StatisticsTierCrawJob.class)
                 .withIdentity("StatisticsTierCrawJob")
                 .usingJobData("msg","开始StatisticsTierCrawJob")
                 .storeDurably()
                 .build();
     }
-    //@Bean
-    public Trigger StatisticsTierCrawJobTrigger(){
+    @Bean
+    public Trigger statisticsTierCrawJobTrigger(){
         SimpleScheduleBuilder scheduleBuilder = SimpleScheduleBuilder.simpleSchedule()
                 //设置时间周期单位秒
-                .withIntervalInSeconds(60*5)
+                .withIntervalInSeconds(60*30)
                 .repeatForever();
         return TriggerBuilder.newTrigger()
-                .forJob(StatisticsTierCrawJobDetail())
+                .forJob(statisticsTierCrawJobDetail())
                 .withIdentity("StatisticsTierCrawTask")
                 .withSchedule(scheduleBuilder)
                 .build();
