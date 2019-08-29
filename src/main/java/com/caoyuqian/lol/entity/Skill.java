@@ -23,4 +23,8 @@ public class Skill {
 
     private Integer skillType; //技能类型 : 1.被动技能  2.主动技能
 
+    private String content;//技能内容
+
+    private String skillName; //技能名称
+
 }
