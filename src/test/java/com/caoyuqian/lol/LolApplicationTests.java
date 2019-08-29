@@ -131,10 +131,13 @@ public class LolApplicationTests {
     public void testCraw() throws IOException {
         String url = "https://www.op.gg/ranking/ladder/page=";
         int page = 1;
-        while (page <= 10) {
-            ladderCraw.ladderCraw(url, page);
-            page++;
-        }
+//        while (page <= 10) {
+//            ladderCraw.ladderCraw(url, page);
+//            page++;
+//        }
+        List<Ladder> ladders = ladderCraw.ladderCraw(url, page);
+
+
     }
 
     @Test

@@ -5,21 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * 技能
- */
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Skill {
+public class HeroSkill {
 
-    private String content;//技能内容
+    private Skill skill;
 
-    private String skillName; //技能名称
-
-    private String imgUrl;  //技能图片
-
-
+    private String heroImage;//英雄图片（属于夹带的私货）
 }

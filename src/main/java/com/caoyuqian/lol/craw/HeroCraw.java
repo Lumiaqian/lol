@@ -1,15 +1,20 @@
 package com.caoyuqian.lol.craw;
 
 import com.caoyuqian.lol.entity.Hero;
+import com.caoyuqian.lol.entity.HeroSkill;
+import com.caoyuqian.lol.entity.Skill;
 import com.caoyuqian.lol.utils.HttpUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,8 +22,14 @@ import java.util.stream.Collectors;
 @Component
 public class HeroCraw {
 
-    public List<Hero> craw(String url) throws IOException {
-        String urls = "https://www.op.gg/champion/statistics";
+    /**
+     * 英雄信息爬虫开启
+     *
+     * @return
+     * @throws IOException
+     */
+    public List<Hero> craw() throws IOException {
+        String url = "https://www.op.gg/champion/statistics";
         //辅助
         List<Hero> sups = crawSupportHero(url);
         //adc
@@ -40,30 +51,80 @@ public class HeroCraw {
 
         sups.removeAll(tops);
         sups.addAll(tops);
-
         //获取技能
 
+        //1.获取所有英雄技能
+        HashMap<String, List<HeroSkill>> skillsMap = new HashMap<>();
+        skillsMap = crawSkill();
+        List<Hero> heroes = new ArrayList<>();
+        //2.技能赋值给英雄
+        for (Hero h : sups
+        ) {
+            List<HeroSkill> skills = skillsMap.get(h.getHName());
+            for (int i = 0; i < skills.size(); i++) {
+                if (i == 0) {
+                    h.setBd(skills.get(i).getSkill());
+                    h.setImage(skills.get(i).getHeroImage());
+                } else if (i == 1) {
+                    h.setQ(skills.get(i).getSkill());
+                } else if (i == 2) {
+                    h.setW(skills.get(i).getSkill());
+                } else if (i == 3) {
+                    h.setE(skills.get(i).getSkill());
+                } else if (i == 4) {
+                    h.setR(skills.get(i).getSkill());
+                }
+            }
 
+            heroes.add(h);
+        }
 
-        return sups;
-    }
-
-    public static void main(String[] args) throws IOException {
-        String url = "https://www.op.gg/statistics/champion/";
-        Document document = HttpUtil.get(url);
-        Element select = document.getElementById("ChampionStatsTable");
-        System.out.println(select);
-
+        return heroes;
     }
 
     /**
      * 爬取英雄技能信息
-     * @param url
+     *
      * @return
      */
-    public List<Hero> crawKill(String url){
-        return null;
+    public HashMap<String, List<HeroSkill>> crawSkill() throws IOException {
+        List<String> allHeroDetilUrl = getAllHeroDetilUrl();
+        HashMap<String, List<HeroSkill>> skillsMap = new HashMap<>();
+        for (String u : allHeroDetilUrl
+        ) {
+            Document document = HttpUtil.get(u);
+            Element skillE = document.getElementsByClass("champion-stats-header-info__skill").get(0);
+
+            Element skillE1 = document.getElementsByClass("champion-stats-header-info__image").get(0);
+            String src = skillE1.select("img").attr("src");
+
+            Elements elements = skillE.select("div");
+            List<HeroSkill> skills = new ArrayList<>();
+            HashMap<String, List<HeroSkill>> heroSkill = new HashMap<>();
+            elements.forEach(element -> {
+                Skill skill = Skill.builder()
+                        .skillName(Jsoup.parse(element.select("div[title]").
+                                attr("title")).select("b").text())
+                        .content(Jsoup.parse(element.select("div[title]").
+                                attr("title")).select("span").text())
+                        .imgUrl("https:"+element.select("img").attr("src"))
+                        .build();
+                HeroSkill heroSkill1 = HeroSkill.builder().skill(skill)
+                        .heroImage("https:"+src).build();
+
+                skills.add(heroSkill1);
+            });
+            skills.remove(0);
+            String name = document.getElementsByClass("champion-stats-header-info__name").text();
+            skillsMap.put(name, skills);
+        }
+//        Elements elementsByClass = document.getElementsByClass("champion-stats-header-info__name");
+//        heroSkill.put(elementsByClass.text(), skills);
+        return skillsMap;
+
     }
+
+
 
     /**
      * 爬取所有辅助英雄
@@ -72,7 +133,7 @@ public class HeroCraw {
      * @return
      * @throws IOException
      */
-    public static List<Hero> crawSupportHero(String url) throws IOException {
+    public List<Hero> crawSupportHero(String url) throws IOException {
         Document document = HttpUtil.get(url);
         List<Hero> heroes = new ArrayList<>();
 
@@ -116,7 +177,7 @@ public class HeroCraw {
      * @param url
      * @return
      */
-    public static List<Hero> crawAdcHero(String url) throws IOException {
+    public List<Hero> crawAdcHero(String url) throws IOException {
         Document document = HttpUtil.get(url);
         List<Hero> heroes = new ArrayList<>();
 
@@ -159,7 +220,7 @@ public class HeroCraw {
      * @return
      * @throws IOException
      */
-    public static List<Hero> crawMidHero(String url) throws IOException {
+    public List<Hero> crawMidHero(String url) throws IOException {
 
         Document document = HttpUtil.get(url);
         List<Hero> heroes = new ArrayList<>();
@@ -204,7 +265,7 @@ public class HeroCraw {
      * @return
      * @throws IOException
      */
-    public static List<Hero> crawJungleHero(String url) throws IOException {
+    public List<Hero> crawJungleHero(String url) throws IOException {
         Document document = HttpUtil.get(url);
         List<Hero> heroes = new ArrayList<>();
         //爬取打野位置的英雄
@@ -290,7 +351,7 @@ public class HeroCraw {
      * @return
      * @throws IOException
      */
-    public static List<String> crawHeroName(String url) throws IOException {
+    public List<String> crawHeroName(String url) throws IOException {
         Document document = HttpUtil.get(url);
         Elements namesElement = document.select("div.champion-index__champion-item__name");
         List<String> names = namesElement.stream().map(Element::text).collect(Collectors.toList());
@@ -302,7 +363,7 @@ public class HeroCraw {
      *
      * @return
      */
-    public static List<String> getAllHeroDetilUrl() throws IOException {
+    public  List<String> getAllHeroDetilUrl() throws IOException {
         List<String> urls = new ArrayList<>();
         String baseUrl = "https://www.op.gg";
         Document document = HttpUtil.get("https://www.op.gg/champion/statistics");
