@@ -47,7 +47,7 @@ public class QuartzConfig {
                 .build();
     }
 
-    @Bean
+    // @Bean
     public JobDetail StatisticsTierCrawJobDetail(){
         return JobBuilder.newJob(StatisticsTierCrawJob.class)
                 .withIdentity("StatisticsTierCrawJob")
@@ -55,7 +55,8 @@ public class QuartzConfig {
                 .storeDurably()
                 .build();
     }
-    @Bean Trigger StatisticsTierCrawJobTrigger(){
+    //@Bean
+    public Trigger StatisticsTierCrawJobTrigger(){
         SimpleScheduleBuilder scheduleBuilder = SimpleScheduleBuilder.simpleSchedule()
                 //设置时间周期单位秒
                 .withIntervalInSeconds(60*5)

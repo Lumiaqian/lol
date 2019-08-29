@@ -79,6 +79,7 @@ public class LadderCraw {
 
                 ladders.add(ladder);
             }
+            log.info(ladders.size()+"条数据");
         }
 
         //爬取第6名之后的信息
@@ -86,6 +87,7 @@ public class LadderCraw {
         //爬取排名信息
         Elements eles = document.getElementsByClass("ranking-table__row");
         List<Ladder> finalLadders = ladders;
+        log.info(ladders.size()+"wei kai  shi ");
         eles.forEach(element -> {
             Ladder ladder = Ladder.builder()
                     .ranking(element.select("td.ranking-table__cell--rank").text())
@@ -99,10 +101,11 @@ public class LadderCraw {
                     .winRatio(element.select("td.ranking-table__cell--winratio span").text())
                     .build();
             finalLadders.add(ladder);
+            log.info(finalLadders.size()+" 一爬取");
         });
 
-        ladders.addAll(finalLadders);
-        log.info(finalLadders.toString());
+        log.info(ladders.toString());
+
         return ladders;
     }
 
