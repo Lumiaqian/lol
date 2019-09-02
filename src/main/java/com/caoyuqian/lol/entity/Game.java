@@ -6,47 +6,46 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
  * @author qian
  * @version V1.0
- * @Title: Ladder
+ * @Title: Game
  * @Package: com.caoyuqian.lol.entity
- * @Description: 天梯榜
- * @date 2019-08-22 11:55
+ * @Description: 游戏记录
+ * @date 2019/9/2 4:16 下午
  **/
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Ladder implements Serializable {
-
+public class Game {
     @Id
-    private String id;
+    private long gameId;
+
     /**
-     * 召唤师名称
+     * 游戏时间
      */
-    String name;
+    private long gameTime;
     /**
-     * rank排名
+     * 红方玩家
      */
-    int ranking;
+    private List<Gamer> red;
     /**
-     * 段位
+     * 蓝方玩家
      */
-    String tier;
+    private List<Gamer> blue;
     /**
-     * rank分数
+     * 游戏时长
      */
-    String lp;
+    private String gameLength;
     /**
-     * 胜率
+     * 蓝色方团队数据
      */
-    String winRatio;
+    private GameMapData blueData;
     /**
-     * 召唤师等级
+     * 红色方团队数据
      */
-    String lv;
+    private GameMapData redData;
 }

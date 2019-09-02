@@ -67,6 +67,19 @@ public class ApiController {
                 })
                 ;
     }
+    @GetMapping("statistics/champion/page")
+    public Mono<Response> getChampions(@RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
+                                       @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize){
+        return statisticsChampionService.findAllByPage(pageNum,pageSize)
+                .collectList()
+                .flatMap(statisticsChampions -> {
+                    if (statisticsChampions.size() == 0) {
+                        return Mono.just(Response.builder().code(1).msg("数据为空！").build());
+                    }
+                    return Mono.just(Response.builder().code(0).msg("获取成功！").data(statisticsChampions).build());
+                })
+                ;
+    }
     @GetMapping("ladder")
     public Mono<Response> getLadder(){
         return ladderService

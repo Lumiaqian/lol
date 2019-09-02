@@ -26,13 +26,13 @@ import java.util.List;
 @Slf4j
 @Component
 public class StatisticsChampionCraw {
-    private String url = "https://www.op.gg/statistics/champion/";
+    private String url = "https://www.op.gg/statistics/ajax2/champion/";
     private Document document;
 
     public List<StatisticsChampion> get() throws IOException {
         List<StatisticsChampion> statisticsChampions = new ArrayList<>();
-        document = HttpUtil.getByHtmlUnit(url);
-        Elements elements = document.select("div.ContentWrap div.Box div.Content");
+        document = HttpUtil.get(url);
+        Elements elements = document.select("tbody.Content");
 
         Elements tr = elements.select("tr.Row");
 //        championNameList = championNames.stream().map()
