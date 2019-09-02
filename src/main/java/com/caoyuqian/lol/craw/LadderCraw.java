@@ -71,7 +71,7 @@ public class LadderCraw {
             for (int i = 0; i < rankingList.size(); i++) {
                 Ladder ladder = Ladder.builder().name(nameList.get(i))
                         .ranking(rankingList.get(i))
-                        .level(levelList.get(i))
+                        .tier(levelList.get(i))
                         .lp(lpList.get(i))
                         .lv(lvList.get(i))
                         .winRatio(winRatioList.get(i))
@@ -94,7 +94,7 @@ public class LadderCraw {
                     .name(element.select("td.ranking-table__cell--summoner span").text()
                             .replace("<span>", "")
                             .replace("</span>", ""))
-                    .level(element.select("td.ranking-table__cell--tier").text())
+                    .tier(element.select("td.ranking-table__cell--tier").text())
                     .lp(StringUtils.substringBefore(element.select("td.ranking-table__cell--lp").text(),
                             " LP").replaceAll(",", ""))
                     .lv(element.select("td.ranking-table__cell--level").text())
