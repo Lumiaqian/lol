@@ -9,7 +9,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -78,7 +77,7 @@ public class HeroCraw {
 
             heroes.add(h);
         }
-
+        log.info("爬取{}条数据",heroes.size());
         return heroes;
     }
 
@@ -123,8 +122,6 @@ public class HeroCraw {
         return skillsMap;
 
     }
-
-
 
     /**
      * 爬取所有辅助英雄

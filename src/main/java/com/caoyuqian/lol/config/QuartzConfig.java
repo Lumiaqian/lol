@@ -1,9 +1,12 @@
 package com.caoyuqian.lol.config;
 
+import com.caoyuqian.lol.task.HeroCrawJob;
 import com.caoyuqian.lol.task.LadderCrawJob;
 import com.caoyuqian.lol.task.PrintTimeJob;
 import com.caoyuqian.lol.task.StatisticsTierCrawJob;
 import org.quartz.*;
+import org.quartz.impl.StdScheduler;
+import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -18,7 +21,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class QuartzConfig {
 
-    @Bean
+    //@Bean
     public JobDetail printTimeJobDetail() {
         return JobBuilder
                 //PrintTimeJob我们的业务类
@@ -33,7 +36,7 @@ public class QuartzConfig {
                 .build();
     }
 
-    @Bean
+    //@Bean
     public Trigger printTimeJobTrigger() {
         SimpleScheduleBuilder scheduleBuilder = SimpleScheduleBuilder.simpleSchedule()
                 //设置时间周期单位秒
@@ -68,7 +71,7 @@ public class QuartzConfig {
                 .withSchedule(scheduleBuilder)
                 .build();
     }
-    @Bean
+    //@Bean
     public JobDetail ladderCrawJobDetail(){
         return JobBuilder.newJob(LadderCrawJob.class)
                 .withIdentity("LadderCrawJob")
@@ -76,7 +79,7 @@ public class QuartzConfig {
                 .storeDurably()
                 .build();
     }
-    @Bean
+    //@Bean
     public Trigger ladderCrawJobTrigger(){
         SimpleScheduleBuilder scheduleBuilder = SimpleScheduleBuilder.simpleSchedule()
                 //设置时间周期单位秒
@@ -88,4 +91,32 @@ public class QuartzConfig {
                 .withSchedule(scheduleBuilder)
                 .build();
     }
+
+    /*********英雄信息定时任务开启*******/
+    //实际任务调度
+    @Bean
+    public JobDetail HeroCrawJobDetail(){
+        return JobBuilder.newJob(HeroCrawJob.class)
+                .withIdentity("HeroCrawJob")
+                .usingJobData("msg","开始HeroCrawJob")
+                .storeDurably()
+                .build();
+    }
+
+    //调度策略
+    @Bean
+    public Trigger HeroCrawJobTrigger() throws SchedulerException {
+        CronScheduleBuilder scheduleBuilder =
+                CronScheduleBuilder.cronSchedule("0 0 18 ? * MON");
+                //设置时间周期单位秒
+
+      return TriggerBuilder.newTrigger()
+                .forJob(HeroCrawJobDetail())
+                .withIdentity("HeroCrawJobTask")
+                .withSchedule(scheduleBuilder)
+                .build();
+
+
+    }
+
 }
