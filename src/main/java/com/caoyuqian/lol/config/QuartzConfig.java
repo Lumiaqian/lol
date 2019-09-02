@@ -80,7 +80,7 @@ public class QuartzConfig {
                 .storeDurably()
                 .build();
     }
-    //@Bean
+    @Bean
     public Trigger ladderCrawJobTrigger(){
         SimpleScheduleBuilder scheduleBuilder = SimpleScheduleBuilder.simpleSchedule()
                 //设置时间周期单位秒
