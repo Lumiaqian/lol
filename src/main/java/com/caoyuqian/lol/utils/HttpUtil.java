@@ -11,6 +11,7 @@ import org.jsoup.nodes.Document;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.logging.Level;
 
 /**
  * @author qian
@@ -38,6 +39,10 @@ public class HttpUtil {
         int waitForBackgroundJavaScript = 20000;
         String result = "";
 
+        java.util.logging.Logger.getLogger("com.gargoylesoftware.htmlunit").setLevel(Level.OFF);
+        java.util.logging.Logger.getLogger("org.apache.commons.httpclient").setLevel(Level.OFF);
+
+
         final WebClient webClient = new WebClient(BrowserVersion.CHROME);
 
         //当JS执行出错的时候是否抛出异常
@@ -58,6 +63,9 @@ public class HttpUtil {
         webClient.setJavaScriptTimeout(timeout);
         //设置请求头
         webClient.addRequestHeader("accept-language", "zh-cn");
+        //屏蔽异常
+        webClient.getOptions().setThrowExceptionOnScriptError(false);
+        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
         HtmlPage page;
         try {
             page = webClient.getPage(url);

@@ -2,6 +2,7 @@ package com.caoyuqian.lol.config;
 
 import com.caoyuqian.lol.task.LadderCrawJob;
 import com.caoyuqian.lol.task.PrintTimeJob;
+import com.caoyuqian.lol.task.StatisticsChampionCrawJob;
 import com.caoyuqian.lol.task.StatisticsTierCrawJob;
 import org.quartz.*;
 import org.springframework.context.annotation.Bean;
@@ -12,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
  * @version V1.0
  * @Title: QuartzConfig
  * @Package: com.caoyuqian.lol.config
- * @Description: TOTO
+ * @Description: Quartz配置
  * @date 2019-08-28 18:53
  **/
 @Configuration
@@ -48,7 +49,7 @@ public class QuartzConfig {
                 .build();
     }
 
-    //@Bean
+    @Bean
     public JobDetail statisticsTierCrawJobDetail(){
         return JobBuilder.newJob(StatisticsTierCrawJob.class)
                 .withIdentity("StatisticsTierCrawJob")
@@ -56,7 +57,7 @@ public class QuartzConfig {
                 .storeDurably()
                 .build();
     }
-    //@Bean
+    @Bean
     public Trigger statisticsTierCrawJobTrigger(){
         SimpleScheduleBuilder scheduleBuilder = SimpleScheduleBuilder.simpleSchedule()
                 //设置时间周期单位秒
@@ -65,6 +66,25 @@ public class QuartzConfig {
         return TriggerBuilder.newTrigger()
                 .forJob(statisticsTierCrawJobDetail())
                 .withIdentity("StatisticsTierCrawTask")
+                .withSchedule(scheduleBuilder)
+                .build();
+    }
+    @Bean
+    public JobDetail statisticsChampionCrawJobDetail(){
+        return JobBuilder.newJob(StatisticsChampionCrawJob.class)
+                .withIdentity("StatisticsChampionCrawJob")
+                .storeDurably()
+                .build();
+    }
+    @Bean
+    public Trigger statisticsChampionCrawJobTrigger(){
+        SimpleScheduleBuilder scheduleBuilder = SimpleScheduleBuilder.simpleSchedule()
+                //设置时间周期单位秒
+                .withIntervalInSeconds(60*30)
+                .repeatForever();
+        return TriggerBuilder.newTrigger()
+                .forJob(statisticsChampionCrawJobDetail())
+                .withIdentity("StatisticsChampionCrawTask")
                 .withSchedule(scheduleBuilder)
                 .build();
     }

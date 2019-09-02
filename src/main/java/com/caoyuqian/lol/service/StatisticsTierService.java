@@ -54,4 +54,7 @@ public class StatisticsTierService {
                 .flatMap(s -> repository.save(statisticsTier));
 
     }
+    public Flux<StatisticsTier> findAll(){
+        return repository.findAll();
+    }
 }

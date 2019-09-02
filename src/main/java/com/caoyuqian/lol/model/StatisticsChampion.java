@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 
-import java.io.Serializable;
+
 
 /**
  * @author qian
@@ -20,7 +20,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class StatisticsChampion implements Serializable {
+public class StatisticsChampion {
 
     @Id
     private String id;

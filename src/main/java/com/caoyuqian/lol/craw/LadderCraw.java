@@ -28,7 +28,7 @@ public class LadderCraw {
      */
     public List<Ladder> ladderCraw(String url, int page) throws IOException {
         //排名
-        List<String> rankingList = new ArrayList<>();
+        List<Integer> rankingList = new ArrayList<>();
         //召唤师名称
         List<String> nameList = new ArrayList<>();
         //段位
@@ -53,7 +53,7 @@ public class LadderCraw {
             Elements lvs = elements.select("div.ranking-highest__level");
 
 
-            rankingList = rankings.stream().map(Element::text).collect(Collectors.toList());
+            rankingList = rankings.stream().map(element -> Integer.parseInt(element.text())).collect(Collectors.toList());
             nameList = names.stream().map(Element::text).collect(Collectors.toList());
             levelList = levels.stream().map(Element::text).collect(Collectors.toList());
             lpList = lps.stream().map(element -> {
@@ -87,10 +87,10 @@ public class LadderCraw {
         //爬取排名信息
         Elements eles = document.getElementsByClass("ranking-table__row");
         List<Ladder> finalLadders = ladders;
-        log.info(ladders.size()+"wei kai  shi ");
+        // log.info(ladders.size()+"wei kai  shi ");
         eles.forEach(element -> {
             Ladder ladder = Ladder.builder()
-                    .ranking(element.select("td.ranking-table__cell--rank").text())
+                    .ranking(Integer.parseInt(element.select("td.ranking-table__cell--rank").text()))
                     .name(element.select("td.ranking-table__cell--summoner span").text()
                             .replace("<span>", "")
                             .replace("</span>", ""))
@@ -101,7 +101,7 @@ public class LadderCraw {
                     .winRatio(element.select("td.ranking-table__cell--winratio span").text())
                     .build();
             finalLadders.add(ladder);
-            log.info(finalLadders.size()+" 一爬取");
+            // log.info(finalLadders.size()+" 一爬取");
         });
 
         log.info(ladders.toString());
