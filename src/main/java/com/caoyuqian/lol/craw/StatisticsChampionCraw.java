@@ -28,8 +28,7 @@ import java.util.List;
 public class StatisticsChampionCraw {
     private String url = "https://www.op.gg/statistics/champion/";
     private Document document;
-    @Autowired
-    private StatisticsChampionService statisticsChampionService;
+
     public List<StatisticsChampion> get() throws IOException {
         List<StatisticsChampion> statisticsChampions = new ArrayList<>();
         document = HttpUtil.getByHtmlUnit(url);
@@ -37,7 +36,7 @@ public class StatisticsChampionCraw {
 
         Elements tr = elements.select("tr.Row");
 //        championNameList = championNames.stream().map()
-        log.info(tr.get(1).html());
+       // log.info(tr.get(1).html());
         tr.forEach(element -> {
             Elements td = element.select("td.Cell");
             if (td.hasText()){

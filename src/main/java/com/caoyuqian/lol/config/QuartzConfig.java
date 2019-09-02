@@ -3,6 +3,7 @@ package com.caoyuqian.lol.config;
 import com.caoyuqian.lol.task.HeroCrawJob;
 import com.caoyuqian.lol.task.LadderCrawJob;
 import com.caoyuqian.lol.task.PrintTimeJob;
+import com.caoyuqian.lol.task.StatisticsChampionCrawJob;
 import com.caoyuqian.lol.task.StatisticsTierCrawJob;
 import org.quartz.*;
 import org.quartz.impl.StdScheduler;
@@ -15,13 +16,13 @@ import org.springframework.context.annotation.Configuration;
  * @version V1.0
  * @Title: QuartzConfig
  * @Package: com.caoyuqian.lol.config
- * @Description: TOTO
+ * @Description: Quartz配置
  * @date 2019-08-28 18:53
  **/
 @Configuration
 public class QuartzConfig {
 
-    //@Bean
+    @Bean
     public JobDetail printTimeJobDetail() {
         return JobBuilder
                 //PrintTimeJob我们的业务类
@@ -36,7 +37,7 @@ public class QuartzConfig {
                 .build();
     }
 
-    //@Bean
+    @Bean
     public Trigger printTimeJobTrigger() {
         SimpleScheduleBuilder scheduleBuilder = SimpleScheduleBuilder.simpleSchedule()
                 //设置时间周期单位秒
@@ -51,7 +52,7 @@ public class QuartzConfig {
                 .build();
     }
 
-    //@Bean
+    @Bean
     public JobDetail statisticsTierCrawJobDetail(){
         return JobBuilder.newJob(StatisticsTierCrawJob.class)
                 .withIdentity("StatisticsTierCrawJob")
@@ -59,7 +60,7 @@ public class QuartzConfig {
                 .storeDurably()
                 .build();
     }
-    //@Bean
+    @Bean
     public Trigger statisticsTierCrawJobTrigger(){
         SimpleScheduleBuilder scheduleBuilder = SimpleScheduleBuilder.simpleSchedule()
                 //设置时间周期单位秒
@@ -71,7 +72,7 @@ public class QuartzConfig {
                 .withSchedule(scheduleBuilder)
                 .build();
     }
-    //@Bean
+
     public JobDetail ladderCrawJobDetail(){
         return JobBuilder.newJob(LadderCrawJob.class)
                 .withIdentity("LadderCrawJob")

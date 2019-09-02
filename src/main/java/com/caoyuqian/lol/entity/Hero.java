@@ -7,13 +7,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 
-import java.io.Serializable;
 
+
+/**
+ * @author lumiaqian
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Hero implements Serializable {
+public class Hero {
 
     @Id
     private String id;

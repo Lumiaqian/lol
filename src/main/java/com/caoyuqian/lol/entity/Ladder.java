@@ -31,7 +31,7 @@ public class Ladder implements Serializable {
     /**
      * rank排名
      */
-    String ranking;
+    int ranking;
     /**
      * 段位
      */

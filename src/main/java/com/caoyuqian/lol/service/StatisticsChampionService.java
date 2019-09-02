@@ -36,4 +36,8 @@ public class StatisticsChampionService {
                     return repository.save(sc);
                 }).switchIfEmpty(repository.saveAll(statisticsChampions));
     }
+
+    public Flux<StatisticsChampion> findAll(){
+        return repository.findAll();
+    }
 }
