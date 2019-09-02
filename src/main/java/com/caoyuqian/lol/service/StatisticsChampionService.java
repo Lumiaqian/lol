@@ -40,4 +40,14 @@ public class StatisticsChampionService {
     public Flux<StatisticsChampion> findAll(){
         return repository.findAll();
     }
+     /**
+       * @Param: pageNum , pageSize
+       * @return: Flux<StatisticsChampion>
+       * @Author: qian
+       * @Description: 分页查询StatisticsChampion
+       * @Date: 2019/9/2 1:48 下午
+      **/
+    public Flux<StatisticsChampion> findAllByPage(int pageNum,int pageSize){
+        return repository.findAllByRankBetweenOrderByRank((pageNum-1)*pageSize,pageNum*pageSize+1);
+    }
 }

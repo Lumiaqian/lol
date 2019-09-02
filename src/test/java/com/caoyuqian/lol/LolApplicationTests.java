@@ -52,42 +52,12 @@ public class LolApplicationTests {
     public void test1() throws IOException {
         List<String> rankingList = new ArrayList<>();
 
-        String url = "https://www.op.gg/ranking/ladder/page=1";
-        Document document = HttpUtil.get(url);
-        Elements eles = document.getElementsByClass("ranking-table__row");
+        String url = "https://www.op.gg/summoner/userName=타+잔 ";
+        String championUrl = "https://www.op.gg/statistics/ajax2/champion/";
+        Document document = HttpUtil.get(championUrl);
+        Elements eles = document.getElementsByClass("Content");
+        log.info(eles.html());
 
-        //排名
-        Elements ranks = eles.select("td.ranking-table__cell--rank");
-        rankingList = ranks.stream().map(Element::text).collect(Collectors.toList());
-
-        //召唤师名称
-        Elements names = eles.select("td.ranking-table__cell--summoner span");
-        List<String> namess = names.stream().map(Element::text).collect(Collectors.toList());
-        namess = namess.stream().map(name -> {
-            name = name.replace("<span>", "");
-            name = name.replace("</span>", "");
-            return name;
-        }).collect(Collectors.toList());
-
-        //召唤师段位
-        Elements dws = eles.select("td.ranking-table__cell--tier");
-        List<String> dwss = dws.stream().map(Element::text).collect(Collectors.toList());
-
-        //召唤师分数
-        Elements lps = eles.select("td.ranking-table__cell--lp");
-        List<String> lpss = lps.stream().map(element -> {
-            return StringUtils.substringBefore(element.text(), " LP").replaceAll(",", "");
-        }).collect(Collectors.toList());
-
-        //召唤师等级
-        Elements levs = eles.select("td.ranking-table__cell--level");
-        List<String> levss = levs.stream().map(Element::text).collect(Collectors.toList());
-
-        //爬取召唤师胜率
-        Elements winRates = eles.select("td.ranking-table__cell--winratio span");
-        List<String> winRatess = winRates.stream().map(Element::text).collect(Collectors.toList());
-
-        System.out.println(winRatess);
     }
 
 
