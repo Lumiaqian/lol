@@ -1,7 +1,13 @@
 package com.caoyuqian.lol.config;
 
-import com.caoyuqian.lol.task.*;
+import com.caoyuqian.lol.task.HeroCrawJob;
+import com.caoyuqian.lol.task.LadderCrawJob;
+import com.caoyuqian.lol.task.PrintTimeJob;
+import com.caoyuqian.lol.task.StatisticsChampionCrawJob;
+import com.caoyuqian.lol.task.StatisticsTierCrawJob;
 import org.quartz.*;
+import org.quartz.impl.StdScheduler;
+import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -10,13 +16,13 @@ import org.springframework.context.annotation.Configuration;
  * @version V1.0
  * @Title: QuartzConfig
  * @Package: com.caoyuqian.lol.config
- * @Description: TOTO
+ * @Description: Quartz配置
  * @date 2019-08-28 18:53
  **/
 @Configuration
 public class QuartzConfig {
 
-    //@Bean
+    @Bean
     public JobDetail printTimeJobDetail() {
         return JobBuilder
                 //PrintTimeJob我们的业务类
@@ -31,7 +37,7 @@ public class QuartzConfig {
                 .build();
     }
 
-    //@Bean
+    @Bean
     public Trigger printTimeJobTrigger() {
         SimpleScheduleBuilder scheduleBuilder = SimpleScheduleBuilder.simpleSchedule()
                 //设置时间周期单位秒
@@ -46,7 +52,7 @@ public class QuartzConfig {
                 .build();
     }
 
-    //@Bean
+    @Bean
     public JobDetail statisticsTierCrawJobDetail(){
         return JobBuilder.newJob(StatisticsTierCrawJob.class)
                 .withIdentity("StatisticsTierCrawJob")
@@ -54,7 +60,7 @@ public class QuartzConfig {
                 .storeDurably()
                 .build();
     }
-    //@Bean
+    @Bean
     public Trigger statisticsTierCrawJobTrigger(){
         SimpleScheduleBuilder scheduleBuilder = SimpleScheduleBuilder.simpleSchedule()
                 //设置时间周期单位秒
@@ -66,7 +72,7 @@ public class QuartzConfig {
                 .withSchedule(scheduleBuilder)
                 .build();
     }
-    //@Bean
+
     public JobDetail ladderCrawJobDetail(){
         return JobBuilder.newJob(LadderCrawJob.class)
                 .withIdentity("LadderCrawJob")
@@ -83,26 +89,6 @@ public class QuartzConfig {
         return TriggerBuilder.newTrigger()
                 .forJob(ladderCrawJobDetail())
                 .withIdentity("LadderCrawJobTask")
-                .withSchedule(scheduleBuilder)
-                .build();
-    }
-
-    @Bean
-    public JobDetail statisticsChampionCrawJobDetail(){
-        return JobBuilder.newJob(StatisticsChampionCrawJob.class)
-                .withIdentity("StatisticsChampionCrawJob")
-                .storeDurably()
-                .build();
-    }
-    @Bean
-    public Trigger statisticsChampionCrawJobTrigger(){
-        SimpleScheduleBuilder scheduleBuilder = SimpleScheduleBuilder.simpleSchedule()
-                //设置时间周期单位秒
-                .withIntervalInSeconds(60*30)
-                .repeatForever();
-        return TriggerBuilder.newTrigger()
-                .forJob(statisticsChampionCrawJobDetail())
-                .withIdentity("StatisticsChampionCrawTask")
                 .withSchedule(scheduleBuilder)
                 .build();
     }

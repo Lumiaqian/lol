@@ -32,4 +32,12 @@ public class LadderService {
                .doFirst(() -> repository.deleteAll().subscribe())
                .doFinally(signalType -> repository.saveAll(ladderList).subscribe());
     }
+
+    public Flux<Ladder> findAll() {
+        return repository.findAll();
+    }
+
+    public Flux<Ladder> findByPage(int pageNum,int pageSize){
+        return repository.findByRankingBetween((pageNum-1)*pageSize,pageNum*pageSize);
+    }
 }
