@@ -16,8 +16,10 @@ import java.io.Serializable;
 @Builder
 public class SummonerSkill implements Serializable {
 
-    private String SSname ;  //技能名称
+    private String sSname ;  //技能名称
 
-    private String SScontent; //技能简介
+    private String sScontent; //技能简介
+
+    private String imageURL; //图片
 
 }
