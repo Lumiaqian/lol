@@ -1,13 +1,7 @@
 package com.caoyuqian.lol.config;
 
-import com.caoyuqian.lol.task.HeroCrawJob;
-import com.caoyuqian.lol.task.LadderCrawJob;
-import com.caoyuqian.lol.task.PrintTimeJob;
-import com.caoyuqian.lol.task.StatisticsChampionCrawJob;
-import com.caoyuqian.lol.task.StatisticsTierCrawJob;
+import com.caoyuqian.lol.task.*;
 import org.quartz.*;
-import org.quartz.impl.StdScheduler;
-import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -104,6 +98,9 @@ public class QuartzConfig {
                 .build();
     }
 
+
+
+
     //调度策略
     @Bean
     public Trigger HeroCrawJobTrigger() throws SchedulerException {
@@ -118,6 +115,30 @@ public class QuartzConfig {
                 .build();
 
 
+    }
+
+    /****************召唤师技能***************/
+    //任务调度
+    @Bean
+    public JobDetail SummonerSkillJobDetil(){
+
+        return JobBuilder.newJob(SummonerSkillCrawJob.class)
+                .withIdentity("SummonerSkillCraw")
+                .usingJobData("msg","开始召唤师技能爬取")
+                .storeDurably()
+                .build();
+    }
+    //调度策略
+    @Bean
+    public Trigger SummonerSkillCrawJobTrigger(){
+        CronScheduleBuilder scheduleBuilder =
+                CronScheduleBuilder.cronSchedule("0 47 16 ? * TUE");
+
+        return TriggerBuilder.newTrigger()
+                .forJob(SummonerSkillJobDetil())
+                .withIdentity("SummonerSkillCrawJobTask")
+                .withSchedule(scheduleBuilder)
+                .build();
     }
 
 }

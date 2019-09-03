@@ -1,7 +1,9 @@
 package com.caoyuqian.lol;
 
 import com.caoyuqian.lol.craw.HeroCraw;
+import com.caoyuqian.lol.craw.SummonerSkillCraw;
 import com.caoyuqian.lol.entity.Hero;
+import com.caoyuqian.lol.entity.SummonerSkill;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,6 +22,9 @@ public class HeroCrawTest {
     @Autowired
     private HeroCraw heroCraw;
 
+    @Autowired
+    private SummonerSkillCraw summonerSkillCraw;
+
     @Test
     public void hero() throws IOException {
 
@@ -28,6 +33,14 @@ public class HeroCrawTest {
         log.info(craw.toString());
 
 
+    }
+
+    @Test
+    public void so() throws Exception{
+        List<SummonerSkill> summonerSkills = summonerSkillCraw.craw();
+
+
+        log.info(summonerSkills.toString());
     }
 
 }
