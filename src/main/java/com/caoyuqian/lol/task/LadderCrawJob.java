@@ -1,6 +1,7 @@
 package com.caoyuqian.lol.task;
 
 import com.caoyuqian.lol.entity.Ladder;
+import com.caoyuqian.lol.entity.Summoner;
 import com.caoyuqian.lol.service.LadderService;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
@@ -16,6 +17,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 
 /**
  * @author qian
@@ -59,6 +61,19 @@ public class LadderCrawJob extends QuartzJobBean {
                 }
             });
             log.info("10页数据总数为：{}",ladders.size());
+            List<Summoner> summoners = ladders.stream().map(ladder -> {
+
+                Summoner summoner = new Summoner.Builder()
+                        .name(ladder.getName())
+                        .lp(ladder.getLp())
+                        .lv(ladder.getLv())
+                        .ranking(ladder.getRanking())
+                        .tier(ladder.getTier())
+                        .winRatio(ladder.getWinRatio())
+                        .build();
+                return summoner;
+            }).collect(Collectors.toList());
+            log.info(summoners.toString());
             //存入数据库
             ladderService.saveAll(ladders).subscribe();
             long end = System.currentTimeMillis();

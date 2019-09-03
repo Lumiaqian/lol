@@ -72,7 +72,7 @@ public class QuartzConfig {
                 .withSchedule(scheduleBuilder)
                 .build();
     }
-
+    @Bean
     public JobDetail ladderCrawJobDetail(){
         return JobBuilder.newJob(LadderCrawJob.class)
                 .withIdentity("LadderCrawJob")

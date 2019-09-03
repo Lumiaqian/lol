@@ -26,6 +26,10 @@ public class Ladder implements Serializable {
     @Id
     private String id;
     /**
+     * 头像
+     */
+    private String borderImage;
+    /**
      * 召唤师名称
      */
     String name;
