@@ -21,6 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class Game {
+
     @Id
     private long gameId;
 
