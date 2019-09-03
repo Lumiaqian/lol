@@ -27,6 +27,7 @@ public class LadderCraw {
      * @throws IOException
      */
     public List<Ladder> ladderCraw(String url, int page) throws IOException {
+        String imgUrl = "Https:";
         //排名
         List<Integer> rankingList = new ArrayList<>();
         //召唤师名称
@@ -39,6 +40,8 @@ public class LadderCraw {
         List<String> lvList = new ArrayList<>();
         //胜率
         List<String> winRatioList = new ArrayList<>();
+        //头像
+        List<String> imgList = new ArrayList<>();
         //数据封装
         List<Ladder> ladders = new ArrayList<>();
         Document document = HttpUtil.get(url + page);
@@ -51,7 +54,7 @@ public class LadderCraw {
             Elements lps = elements.select("div.ranking-highest__tierrank b");
             Elements winRatios = elements.select("span.winratio__text");
             Elements lvs = elements.select("div.ranking-highest__level");
-
+            Elements imgs = elements.select("img.ranking-highest__image");
 
             rankingList = rankings.stream().map(element -> Integer.parseInt(element.text())).collect(Collectors.toList());
             nameList = names.stream().map(Element::text).collect(Collectors.toList());
@@ -66,6 +69,7 @@ public class LadderCraw {
                 }
                 return element.text();
             }).collect(Collectors.toList());
+            imgList = imgs.stream().map(img -> imgUrl+img.attr("src")).collect(Collectors.toList());
             ladders = new ArrayList<>(rankingList.size());
 
             for (int i = 0; i < rankingList.size(); i++) {
@@ -75,6 +79,7 @@ public class LadderCraw {
                         .lp(lpList.get(i))
                         .lv(lvList.get(i))
                         .winRatio(winRatioList.get(i))
+                        .borderImage(imgList.get(i))
                         .build();
 
                 ladders.add(ladder);
@@ -99,6 +104,7 @@ public class LadderCraw {
                             " LP").replaceAll(",", ""))
                     .lv(element.select("td.ranking-table__cell--level").text())
                     .winRatio(element.select("td.ranking-table__cell--winratio span").text())
+                    .borderImage(imgUrl+element.select("td.ranking-table__cell--summoner img").attr("src"))
                     .build();
             finalLadders.add(ladder);
             // log.info(finalLadders.size()+" 一爬取");
