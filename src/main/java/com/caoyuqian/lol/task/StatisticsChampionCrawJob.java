@@ -7,6 +7,8 @@ import com.caoyuqian.lol.service.StatisticsChampionService;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
@@ -23,9 +25,9 @@ import java.util.List;
  * @Description: 英雄数据排行爬取
  * @date 2019-08-30 10:43
  **/
-@Slf4j
 public class StatisticsChampionCrawJob extends QuartzJobBean {
 
+    private final static Logger log = LoggerFactory.getLogger(StatisticsChampionCrawJob.class);
     @Autowired
     private StatisticsChampionCraw statisticsChampionCraw;
     @Autowired

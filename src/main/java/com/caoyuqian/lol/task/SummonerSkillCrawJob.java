@@ -6,6 +6,8 @@ import com.caoyuqian.lol.service.SummonerSkillService;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
@@ -14,8 +16,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-@Slf4j
+
 public class SummonerSkillCrawJob extends QuartzJobBean {
+
+    private final static Logger log = LoggerFactory.getLogger(SummonerSkillCrawJob.class);
     @Autowired
     private SummonerSkillCraw summonerSkillCraw;
     @Autowired
