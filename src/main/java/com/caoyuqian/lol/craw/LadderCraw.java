@@ -76,8 +76,8 @@ public class LadderCraw {
                 Ladder ladder = Ladder.builder().name(nameList.get(i))
                         .ranking(rankingList.get(i))
                         .tier(levelList.get(i))
-                        .lp(lpList.get(i))
-                        .lv(lvList.get(i))
+                        .lp(Integer.parseInt(lpList.get(i)))
+                        .lv(Integer.parseInt(lvList.get(i)))
                         .winRatio(winRatioList.get(i))
                         .borderImage(imgList.get(i))
                         .build();
@@ -100,9 +100,9 @@ public class LadderCraw {
                             .replace("<span>", "")
                             .replace("</span>", ""))
                     .tier(element.select("td.ranking-table__cell--tier").text())
-                    .lp(StringUtils.substringBefore(element.select("td.ranking-table__cell--lp").text(),
-                            " LP").replaceAll(",", ""))
-                    .lv(element.select("td.ranking-table__cell--level").text())
+                    .lp(Integer.parseInt(StringUtils.substringBefore(element.select("td.ranking-table__cell--lp").text(),
+                            " LP").replaceAll(",", "")))
+                    .lv(Integer.parseInt(element.select("td.ranking-table__cell--level").text()))
                     .winRatio(element.select("td.ranking-table__cell--winratio span").text())
                     .borderImage(imgUrl+element.select("td.ranking-table__cell--summoner img").attr("src"))
                     .build();

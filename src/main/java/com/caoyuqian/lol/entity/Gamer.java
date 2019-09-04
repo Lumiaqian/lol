@@ -28,15 +28,21 @@ public class Gamer {
     /**
      * 使用的英雄名称
      */
-    private String heroName;
+    private String championName;
+
+    /**
+     * 使用的英雄等级
+     */
+
+    private int level;
     /**
      * 携带的召唤师技能
      */
-    private HashMap<String,String> summonerSpell;
+    private HashMap summonerSpells;
     /**
      * 携带的天赋符文
      */
-    private HashMap<String,String> rune;
+    private HashMap runes;
     /**
      * 召唤师名称
      */
@@ -45,6 +51,10 @@ public class Gamer {
      * 召唤师段位
      */
     private String tier;
+    /**
+     * 胜点
+     */
+    private int lp;
     /**
      * 本局评分
      */
@@ -57,6 +67,10 @@ public class Gamer {
      * 本局伤害
      */
     private int championDamage;
+    /**
+     * 本局承伤
+     */
+    private int championInjury;
     /**
      * 本局控制守卫信息
      */
@@ -72,6 +86,6 @@ public class Gamer {
     /**
      * 本局装备
      */
-    private HashMap<String,String> items;
+    private List<HashMap> items;
 
 }

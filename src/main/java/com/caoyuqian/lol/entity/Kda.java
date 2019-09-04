@@ -22,15 +22,15 @@ public class Kda {
     /**
      * 本局击杀数
      */
-    private int kill;
+    private double kill;
     /**
      * 本局阵亡次数
      */
-    private int death;
+    private double death;
     /**
      * 本局助攻数
      */
-    private int assist;
+    private double assist;
     /**
      * 本局kda
      */
@@ -38,5 +38,5 @@ public class Kda {
     /**
      * 本局击杀贡献率CKRate
      */
-    private double ckRate;
+    private String ckRate;
 }

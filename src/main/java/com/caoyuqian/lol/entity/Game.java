@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -23,30 +24,30 @@ import java.util.List;
 public class Game {
 
     @Id
-    private long gameId;
+    private String gameId;
 
     /**
      * 游戏时间
      */
     private long gameTime;
     /**
-     * 红方玩家
+     * 胜利方玩家数据：包括玩家数据和红蓝方
      */
-    private List<Gamer> red;
+    private HashMap<String,Object> win;
     /**
-     * 蓝方玩家
+     * s失利方玩家：包括玩家数据和红蓝方
      */
-    private List<Gamer> blue;
+    private HashMap<String,Object> loss;
     /**
      * 游戏时长
      */
     private String gameLength;
     /**
-     * 蓝色方团队数据
+     * 胜利方团队数据
      */
-    private GameMapData blueData;
+    private GameMapData winData;
     /**
-     * 红色方团队数据
+     * 失利方团队数据
      */
-    private GameMapData redData;
+    private GameMapData loseData;
 }
