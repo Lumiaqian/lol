@@ -29,8 +29,11 @@ public class HttpUtil {
         Connection connection = Jsoup.connect(url);
         connection.header(USER_AGENT,USER_AGENT_VALUE);
         connection.header("accept-language", "zh-cn");
-        Connection.Response rs = connection.execute();
-        return Jsoup.parse(rs.body());
+        connection.header("Referer", "https://www.baidu.com/")
+        .header("Accept", "*/*")
+        .header("Accept-Encoding", "gzip, deflate")
+        .timeout(5000);
+        return connection.get();
     }
     public static Document getByHtmlUnit(String url) throws IOException {
         //请求超时时间,默认20秒
@@ -64,7 +67,6 @@ public class HttpUtil {
         //设置请求头
         webClient.addRequestHeader("accept-language", "zh-cn");
         //屏蔽异常
-        webClient.getOptions().setThrowExceptionOnScriptError(false);
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
         HtmlPage page;
         try {

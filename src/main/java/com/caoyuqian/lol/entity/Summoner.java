@@ -20,7 +20,26 @@ public class Summoner extends Ladder {
 
     @Id
     private String summonerId;
-
+    /**
+     * 所在的职业战队
+     */
+    private String team;
+    /**
+     * 职业ID
+     */
+    private String careerId;
+    /**
+     * 本赛季总胜场
+     */
+    private int totalWin;
+    /**
+     * 本赛季总负场
+     */
+    private int totalLose;
+    /**
+     * 段位头像
+     */
+    private String tierIcon;
     /**
      * 最近20场平均数据
      */
@@ -33,20 +52,31 @@ public class Summoner extends Ladder {
      * 最近20场所在的位置
      */
     private List<PreferredPosition> positions;
+    /**
+     * 最近20场比赛的查询参数
+     */
+    private List<GameParams> params;
 
     @Override
     public String toString() {
         return "Summoner{" +
                 "summonerId='" + summonerId + '\'' +
+                ", team='" + team + '\'' +
+                ", careerId='" + careerId + '\'' +
+                ", totalWin=" + totalWin +
+                ", totalLose=" + totalLose +
+                ", tierIcon='" + tierIcon + '\'' +
                 ", gas=" + gas +
                 ", champions=" + champions +
                 ", positions=" + positions +
+                ", params=" + params +
+                ", borderImage='" + borderImage + '\'' +
                 ", name='" + name + '\'' +
                 ", ranking=" + ranking +
                 ", tier='" + tier + '\'' +
-                ", lp='" + lp + '\'' +
+                ", lp=" + lp +
                 ", winRatio='" + winRatio + '\'' +
-                ", lv='" + lv + '\'' +
+                ", lv=" + lv +
                 '}';
     }
 
@@ -64,56 +94,109 @@ public class Summoner extends Ladder {
         this.ranking = summoner.ranking;
         this.tier = summoner.tier;
         this.winRatio = summoner.winRatio;
+        this.borderImage = summoner.borderImage;
+        this.totalWin = summoner.totalWin;
+        this.totalLose = summoner.totalLose;
+        this.team = summoner.team;
+        this.careerId = summoner.careerId;
+        this.tierIcon = summoner.tierIcon;
+        this.params = summoner.params;
     }
 
 
-    public static class Builder{
+    public static class Builder {
         private Summoner summoner;
 
         public Builder() {
             this.summoner = new Summoner();
         }
-        public Builder name(String name){
+
+        public Builder name(String name) {
             summoner.name = name;
             return this;
         }
-        public Builder ranking(int ranking){
+
+        public Builder ranking(int ranking) {
             summoner.ranking = ranking;
             return this;
         }
-        public Builder tier(String tier){
+
+        public Builder tier(String tier) {
             summoner.tier = tier;
             return this;
         }
-        public Builder lp(String lp){
+
+        public Builder lp(int lp) {
             summoner.lp = lp;
             return this;
         }
-        public Builder winRatio(String winRatio){
+
+        public Builder winRatio(String winRatio) {
             summoner.winRatio = winRatio;
             return this;
         }
-        public Builder lv(String lv){
+
+        public Builder lv(int lv) {
             summoner.lv = lv;
             return this;
         }
-        public Builder summonerId(String summonerId){
+
+        public Builder summonerId(String summonerId) {
             summoner.summonerId = summonerId;
             return this;
         }
-        public Builder gas(GameAverageStats gas){
+
+        public Builder gas(GameAverageStats gas) {
             summoner.gas = gas;
             return this;
         }
-        public Builder champions(List<MostChampion> champions){
+
+        public Builder champions(List<MostChampion> champions) {
             summoner.champions = champions;
             return this;
         }
-        public Builder positions(List<PreferredPosition> positions){
+
+        public Builder positions(List<PreferredPosition> positions) {
             summoner.positions = positions;
             return this;
         }
-        public Summoner build(){
+
+        public Builder borderImage(String borderImage) {
+            summoner.borderImage = borderImage;
+            return this;
+        }
+
+        public Builder team(String team) {
+            summoner.team = team;
+            return this;
+        }
+
+        public Builder careerId(String careerId) {
+            summoner.careerId = careerId;
+            return this;
+        }
+
+        public Builder totalWin(int totalWin) {
+            summoner.totalWin = totalWin;
+            return this;
+        }
+
+        public Builder totalLose(int totalLose) {
+            summoner.totalLose = totalLose;
+            return this;
+        }
+
+        public Builder tierIcon(String tierIcon) {
+            summoner.tierIcon = tierIcon;
+            return this;
+        }
+
+        public Builder params(List<GameParams> params) {
+            summoner.params = params;
+            return this;
+        }
+
+        public Summoner build() {
             return new Summoner(summoner);
         }
     }

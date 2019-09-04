@@ -28,7 +28,7 @@ public class Ladder implements Serializable {
     /**
      * 头像
      */
-    private String borderImage;
+    String borderImage;
     /**
      * 召唤师名称
      */
@@ -44,7 +44,7 @@ public class Ladder implements Serializable {
     /**
      * rank分数
      */
-    String lp;
+    int lp;
     /**
      * 胜率
      */
@@ -52,5 +52,5 @@ public class Ladder implements Serializable {
     /**
      * 召唤师等级
      */
-    String lv;
+    int lv;
 }

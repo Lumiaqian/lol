@@ -26,7 +26,11 @@ public class MostChampion {
     /**
      * 胜率
      */
-    private int winRatio;
+    private String image;
+    /**
+     * 胜率
+     */
+    private String winRatio;
     /**
      * 胜场
      */
