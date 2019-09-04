@@ -11,7 +11,6 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 @Service
-@Slf4j
 public class HeroService {
 
     @Autowired

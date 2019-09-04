@@ -2,12 +2,12 @@ package com.caoyuqian.lol.craw;
 
 import com.caoyuqian.lol.entity.*;
 import com.caoyuqian.lol.utils.HttpUtil;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -25,8 +25,8 @@ import java.util.List;
  * @date 2019/9/3 4:04 下午
  **/
 @Component
-@Slf4j
 public class GameRecordCraw {
+    private final static Logger log = LoggerFactory.getLogger(GameRecordCraw.class);
 
     public Game get(String url, GameParams params) throws IOException {
         Document document = HttpUtil.get(url + "gameId=" + params.getGameId()

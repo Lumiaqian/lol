@@ -8,6 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,20 +25,21 @@ import java.util.List;
  * @Description: 英雄统计
  * @date 2019-08-27 09:59
  **/
-@Slf4j
 @Component
 public class StatisticsChampionCraw {
-    private String url = "https://www.op.gg/statistics/ajax2/champion/";
-    private Document document;
 
+    private final static Logger log = LoggerFactory.getLogger(StatisticsChampionCraw.class);
     public List<StatisticsChampion> get() throws IOException {
+        String url = "https://www.op.gg/statistics/ajax2/champion/";
+        //String url = "https://www.op.gg/statistics/champion/";
+        Document document;
         List<StatisticsChampion> statisticsChampions = new ArrayList<>();
         document = HttpUtil.get(url);
-        Elements elements = document.select("tbody.Content");
+        Elements elements = document.select("table.StatisticsChampionTable tbody.Content");
 
         Elements tr = elements.select("tr.Row");
 //        championNameList = championNames.stream().map()
-       // log.info(tr.get(1).html());
+       // log.info(tr.get(0).html());
         tr.forEach(element -> {
             Elements td = element.select("td.Cell");
             if (td.hasText()){

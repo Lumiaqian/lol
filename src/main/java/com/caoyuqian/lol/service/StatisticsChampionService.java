@@ -18,7 +18,6 @@ import java.util.List;
  * @Description: TOTO
  * @date 2019-08-27 17:41
  **/
-@Slf4j
 @Service
 public class StatisticsChampionService {
     @Autowired

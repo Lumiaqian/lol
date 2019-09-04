@@ -42,5 +42,5 @@ public class MostChampion {
     /**
      * KDA
      */
-    private double kda;
+    private String kda;
 }

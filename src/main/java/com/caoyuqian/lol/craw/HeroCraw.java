@@ -9,6 +9,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -17,9 +19,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Component
 public class HeroCraw {
+    private final static Logger log = LoggerFactory.getLogger(HeroCraw.class);
 
     /**
      * 英雄信息爬虫开启

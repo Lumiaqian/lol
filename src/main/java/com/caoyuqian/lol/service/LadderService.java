@@ -21,7 +21,6 @@ import java.util.function.LongConsumer;
  * @date 2019-08-29 11:38
  **/
 @Service
-@Slf4j
 public class LadderService {
     @Autowired
     private LadderRepository repository;

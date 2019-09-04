@@ -8,6 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,9 +25,9 @@ import java.util.List;
  * @Description: TOTO
  * @date 2019-08-27 16:07
  **/
-@Slf4j
 @Component
 public class StatisticsTierCraw {
+    private final static Logger log = LoggerFactory.getLogger(StatisticsTierCraw.class);
     private String url = "https://www.op.gg/statistics/tier/";
     private Document document;
     public List<StatisticsTier> get() throws IOException {

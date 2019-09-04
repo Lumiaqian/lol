@@ -46,16 +46,17 @@ public class QuartzConfig {
                 .build();
     }
 
-    @Bean
-    public JobDetail statisticsTierCrawJobDetail(){
+    //@Bean
+    public JobDetail statisticsTierCrawJobDetail() {
         return JobBuilder.newJob(StatisticsTierCrawJob.class)
                 .withIdentity("StatisticsTierCrawJob")
-                .usingJobData("msg","开始StatisticsTierCrawJob")
+                .usingJobData("msg", "开始StatisticsTierCrawJob")
                 .storeDurably()
                 .build();
     }
-    @Bean
-    public Trigger statisticsTierCrawJobTrigger(){
+
+    //@Bean
+    public Trigger statisticsTierCrawJobTrigger() {
         SimpleScheduleBuilder scheduleBuilder = SimpleScheduleBuilder.simpleSchedule()
                 //设置时间周期单位秒
                 .withIntervalInSeconds(60*30)
@@ -66,19 +67,41 @@ public class QuartzConfig {
                 .withSchedule(scheduleBuilder)
                 .build();
     }
-    @Bean
-    public JobDetail ladderCrawJobDetail(){
-        return JobBuilder.newJob(LadderCrawJob.class)
-                .withIdentity("LadderCrawJob")
-                .usingJobData("msg","开始LadderCrawJob")
+
+    //@Bean
+    public JobDetail statisticsChampionCrawJobDetail(){
+        return JobBuilder.newJob(StatisticsChampionCrawJob.class)
+                .withIdentity("StatisticsChampionCrawJob")
                 .storeDurably()
                 .build();
     }
-    @Bean
-    public Trigger ladderCrawJobTrigger(){
+    //@Bean
+    public Trigger statisticsChampionCrawJobTrigger(){
         SimpleScheduleBuilder scheduleBuilder = SimpleScheduleBuilder.simpleSchedule()
                 //设置时间周期单位秒
                 .withIntervalInSeconds(60*30)
+                .repeatForever();
+        return TriggerBuilder.newTrigger()
+                .forJob(statisticsChampionCrawJobDetail())
+                .withIdentity("StatisticsChampionCrawTask")
+                .withSchedule(scheduleBuilder)
+                .build();
+    }
+
+    //@Bean
+    public JobDetail ladderCrawJobDetail() {
+        return JobBuilder.newJob(LadderCrawJob.class)
+                .withIdentity("LadderCrawJob")
+                .usingJobData("msg", "开始LadderCrawJob")
+                .storeDurably()
+                .build();
+    }
+
+    //@Bean
+    public Trigger ladderCrawJobTrigger() {
+        SimpleScheduleBuilder scheduleBuilder = SimpleScheduleBuilder.simpleSchedule()
+                //设置时间周期单位秒
+                .withIntervalInSeconds(60 * 30)
                 .repeatForever();
         return TriggerBuilder.newTrigger()
                 .forJob(ladderCrawJobDetail())
@@ -90,15 +113,13 @@ public class QuartzConfig {
     /*********英雄信息定时任务开启*******/
     //实际任务调度
     @Bean
-    public JobDetail HeroCrawJobDetail(){
+    public JobDetail HeroCrawJobDetail() {
         return JobBuilder.newJob(HeroCrawJob.class)
                 .withIdentity("HeroCrawJob")
-                .usingJobData("msg","开始HeroCrawJob")
+                .usingJobData("msg", "开始HeroCrawJob")
                 .storeDurably()
                 .build();
     }
-
-
 
 
     //调度策略
@@ -106,9 +127,9 @@ public class QuartzConfig {
     public Trigger HeroCrawJobTrigger() throws SchedulerException {
         CronScheduleBuilder scheduleBuilder =
                 CronScheduleBuilder.cronSchedule("0 0 18 ? * MON");
-                //设置时间周期单位秒
+        //设置时间周期单位秒
 
-      return TriggerBuilder.newTrigger()
+        return TriggerBuilder.newTrigger()
                 .forJob(HeroCrawJobDetail())
                 .withIdentity("HeroCrawJobTask")
                 .withSchedule(scheduleBuilder)
@@ -120,17 +141,18 @@ public class QuartzConfig {
     /****************召唤师技能***************/
     //任务调度
     @Bean
-    public JobDetail SummonerSkillJobDetil(){
+    public JobDetail SummonerSkillJobDetil() {
 
         return JobBuilder.newJob(SummonerSkillCrawJob.class)
                 .withIdentity("SummonerSkillCraw")
-                .usingJobData("msg","开始召唤师技能爬取")
+                .usingJobData("msg", "开始召唤师技能爬取")
                 .storeDurably()
                 .build();
     }
+
     //调度策略
     @Bean
-    public Trigger SummonerSkillCrawJobTrigger(){
+    public Trigger SummonerSkillCrawJobTrigger() {
         CronScheduleBuilder scheduleBuilder =
                 CronScheduleBuilder.cronSchedule("0 47 16 ? * TUE");
 
@@ -141,4 +163,32 @@ public class QuartzConfig {
                 .build();
     }
 
+    /**
+     * @Param:
+     * @return: JobDetail
+     * @Author: qian
+     * @Description: 爬取召唤师信息任务
+     * @Date: 2019/9/4 10:17 上午
+     **/
+    @Bean
+    public JobDetail summonerCrawJobDetail() {
+        return JobBuilder.newJob(SummonerCrawJob.class)
+                .withIdentity("SummonerCraw")
+                .usingJobData("msg", "开始爬取召唤师详细信息")
+                .storeDurably()
+                .build();
+    }
+
+    @Bean
+    public Trigger summonerCrawJobTrigger() {
+        SimpleScheduleBuilder scheduleBuilder = SimpleScheduleBuilder.simpleSchedule()
+                //设置时间周期单位秒
+                .withIntervalInSeconds(60*30*4)
+                .repeatForever();
+        return TriggerBuilder.newTrigger()
+                .forJob(summonerCrawJobDetail())
+                .withIdentity("summonerCrawTask")
+                .withSchedule(scheduleBuilder)
+                .build();
+    }
 }
