@@ -74,6 +74,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-quartz</artifactId>
         </dependency>
+
         <!-- fastjson -->
         <dependency>
             <groupId>com.alibaba</groupId>

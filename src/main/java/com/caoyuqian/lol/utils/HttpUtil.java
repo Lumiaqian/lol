@@ -86,4 +86,18 @@ public class HttpUtil {
         Document doc = Jsoup.parse(result, url);
         return doc;
     }
+
+    public static String connect(String url) throws IOException {
+        Connection connection = Jsoup.connect(url).ignoreContentType(true);
+        connection.header("User-Agent",
+                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36");
+        connection.header("accept","*/*");
+        connection.header("accept-language","zh-CN,zh;q=0.9");
+        connection.header("referer","https://lol.qq.com/data/info-spell.shtml");
+        byte[] bytes = connection.execute().bodyAsBytes();
+        return new String(bytes,"GBK");
+    }
+
+
+
 }
