@@ -3,6 +3,8 @@ package com.caoyuqian.lol.task;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
 import java.text.SimpleDateFormat;
@@ -16,8 +18,8 @@ import java.util.Date;
  * @Description: TOTO
  * @date 2019-08-28 18:51
  **/
-@Slf4j
 public class PrintTimeJob extends QuartzJobBean {
+    private final static Logger log = LoggerFactory.getLogger(PrintTimeJob.class);
     @Override
     protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
         //获取JobDetail中关联的数据

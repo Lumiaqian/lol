@@ -5,6 +5,8 @@ import com.caoyuqian.lol.service.LadderService;
 import com.caoyuqian.lol.service.StatisticsChampionService;
 import com.caoyuqian.lol.service.StatisticsTierService;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
@@ -18,7 +20,6 @@ import reactor.core.publisher.Mono;
  * @date 2019-08-30 11:31
  **/
 @RestController
-@Slf4j
 @RequestMapping("api")
 public class ApiController {
 
@@ -28,6 +29,8 @@ public class ApiController {
     private StatisticsTierService statisticsTierService;
     @Autowired
     private StatisticsChampionService statisticsChampionService;
+
+    private final static Logger log = LoggerFactory.getLogger(ApiController.class);
 
     @GetMapping("statistics/tier")
     public Mono<Response> getTiers() {

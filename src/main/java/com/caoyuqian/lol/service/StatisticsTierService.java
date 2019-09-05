@@ -3,6 +3,8 @@ package com.caoyuqian.lol.service;
 import com.caoyuqian.lol.model.StatisticsTier;
 import com.caoyuqian.lol.repository.StatisticsTierRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -22,9 +24,8 @@ import java.util.stream.Collectors;
  * @date 2019-08-27 18:05
  **/
 @Service
-@Slf4j
 public class StatisticsTierService {
-
+    private final static Logger log = LoggerFactory.getLogger(StatisticsTierService.class);
     @Autowired
     private StatisticsTierRepository repository;
 

@@ -18,7 +18,11 @@ import java.util.List;
 @NoArgsConstructor
 public class Summoner extends Ladder {
 
-    @Id
+    /**
+     * 版本号
+     */
+    private long version;
+
     private String summonerId;
     /**
      * 所在的职业战队
@@ -60,7 +64,8 @@ public class Summoner extends Ladder {
     @Override
     public String toString() {
         return "Summoner{" +
-                "summonerId='" + summonerId + '\'' +
+                "version=" + version +
+                ", summonerId='" + summonerId + '\'' +
                 ", team='" + team + '\'' +
                 ", careerId='" + careerId + '\'' +
                 ", totalWin=" + totalWin +
@@ -101,6 +106,7 @@ public class Summoner extends Ladder {
         this.careerId = summoner.careerId;
         this.tierIcon = summoner.tierIcon;
         this.params = summoner.params;
+        this.version = summoner.version;
     }
 
 
@@ -193,6 +199,10 @@ public class Summoner extends Ladder {
 
         public Builder params(List<GameParams> params) {
             summoner.params = params;
+            return this;
+        }
+        public Builder version(long version){
+            summoner.version = version;
             return this;
         }
 

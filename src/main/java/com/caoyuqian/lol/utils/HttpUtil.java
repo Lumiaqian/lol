@@ -8,6 +8,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URL;
@@ -42,11 +43,16 @@ public class HttpUtil {
         int waitForBackgroundJavaScript = 20000;
         String result = "";
 
-        java.util.logging.Logger.getLogger("com.gargoylesoftware.htmlunit").setLevel(Level.OFF);
-        java.util.logging.Logger.getLogger("org.apache.commons.httpclient").setLevel(Level.OFF);
+        //设置日志级别，原页面js异常不打印
+        // LogFactory.getFactory().setAttribute("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
+        java.util.logging.Logger.getLogger("com.gargoylesoftware.htmlunit")
+                .setLevel(Level.OFF);
+
+        java.util.logging.Logger.getLogger("org.apache.commons.httpclient")
+                .setLevel(Level.OFF);
 
 
-        final WebClient webClient = new WebClient(BrowserVersion.CHROME);
+        final WebClient webClient = new WebClient(BrowserVersion.FIREFOX_60);
 
         //当JS执行出错的时候是否抛出异常
         webClient.getOptions().setThrowExceptionOnScriptError(false);
@@ -66,8 +72,8 @@ public class HttpUtil {
         webClient.setJavaScriptTimeout(timeout);
         //设置请求头
         webClient.addRequestHeader("accept-language", "zh-cn");
-        //屏蔽异常
-        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
+        //设置SSL
+        webClient.getOptions().setUseInsecureSSL(true);
         HtmlPage page;
         try {
             page = webClient.getPage(url);
@@ -83,8 +89,7 @@ public class HttpUtil {
 
 
         // Jsoup解析处理
-        Document doc = Jsoup.parse(result, url);
-        return doc;
+        return Jsoup.parse(result, url);
     }
 
     public static String connect(String url) throws IOException {

@@ -23,7 +23,7 @@ import java.util.List;
 @Builder
 public class Game {
 
-    @Id
+
     private String gameId;
 
     /**
