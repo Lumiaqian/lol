@@ -1,10 +1,12 @@
 package com.caoyuqian.lol.task;
 
+import com.caoyuqian.lol.craw.GoodsCraw;
 import com.caoyuqian.lol.craw.LadderCraw;
 import com.caoyuqian.lol.craw.SummonerCraw;
 import com.caoyuqian.lol.entity.Game;
 import com.caoyuqian.lol.entity.Ladder;
 import com.caoyuqian.lol.entity.Summoner;
+import com.caoyuqian.lol.entity.goods.Goods;
 import com.caoyuqian.lol.service.SummonerService;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -39,6 +41,9 @@ public class AsyncExecutorTask {
     @Autowired
     private SummonerCrawExecutorTask summonerCrawExecutorTask;
 
+    @Autowired
+    private GoodsCraw goodsCraw;
+
     private final static Logger log = LoggerFactory.getLogger(AsyncExecutorTask.class);
 
     @Async("taskExecutor")
@@ -65,6 +70,7 @@ public class AsyncExecutorTask {
         log.info("执行任务: SummonerCrawJob-{}", index + 1);
         Map<Integer, List<Ladder>> map = ladders.stream()
                 .collect(Collectors.groupingBy(ladder -> (ladder.getRanking() - 1) / 5));
+
         //log.info(map.keySet().toString());
         map.forEach((k,v) ->{
             Future<List<Summoner>> future = summonerCrawExecutorTask.doSummonerCrawTask(index,k,v);
@@ -74,14 +80,24 @@ public class AsyncExecutorTask {
             try {
                 summoners.addAll(future.get());
             } catch (InterruptedException | ExecutionException e) {
-               log.error(e.getMessage());
+                log.error(e.getMessage());
             }
         });
         long end = System.currentTimeMillis();
+
         log.info("SummonerCrawJob-{}任务summoner的数量：{}",index+1,summoners.size());
         log.info("SummonerCrawJob-{}任务耗时：{}秒", index+1,(end - start) / 1000);
+
         return new AsyncResult<>(summoners);
     }
 
 
+    @Async("taskExecutorGoods")
+    public Future<List<Goods>> doGoodsCrawTask(int index, int end) throws IOException {
+        log.info("开始爬取第{}页到第{}页的装备物品数据",index,end);
+        List<Goods> goods = goodsCraw.crawByPage(index, end);
+
+        return  new AsyncResult<>(goods);
+
+    }
 }
