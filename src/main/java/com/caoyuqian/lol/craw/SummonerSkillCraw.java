@@ -56,7 +56,7 @@ public class SummonerSkillCraw {
     public List<SummonerSkill> crawSummonerSkill() throws IOException {
 
 
-        String url = "https://lol.qq.com/biz/hero/summoner.js";
+        String url = "http://gpcd.gtimg.cn/upload/qqtalk/lol_hero/1d/goods_list.js";
 
         String connect = HttpUtil.connect(url);
         String replace = connect.replace("if(!LOLsummonerjs)var ", "");

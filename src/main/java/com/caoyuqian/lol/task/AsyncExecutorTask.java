@@ -1,7 +1,9 @@
 package com.caoyuqian.lol.task;
 
+import com.caoyuqian.lol.craw.GoodsCraw;
 import com.caoyuqian.lol.craw.LadderCraw;
 import com.caoyuqian.lol.entity.Ladder;
+import com.caoyuqian.lol.entity.goods.Goods;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -26,6 +28,8 @@ import java.util.concurrent.Future;
 public class AsyncExecutorTask {
     @Autowired
     private LadderCraw ladderCraw;
+    @Autowired
+    private GoodsCraw goodsCraw;
 
     @Async("taskExecutor")
     public Future<List<Ladder>> doLadderCrawTask(String url, int page, CountDownLatch cdl) throws Exception {
@@ -41,6 +45,12 @@ public class AsyncExecutorTask {
         return new AsyncResult<>(ladders);
     }
 
+    @Async("taskExecutorGoods")
+    public Future<List<Goods>> doGoodsCrawTask( int start,int end) throws Exception {
 
+        log.info("开始爬取排行榜第{}页到第{}页的数据",start,end);
+        List<Goods> goods = goodsCraw.crawByPage(start, end);
+        return new AsyncResult<>(goods);
+    }
 
 }

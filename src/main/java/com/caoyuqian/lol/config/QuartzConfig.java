@@ -141,4 +141,26 @@ public class QuartzConfig {
                 .build();
     }
 
+    //装备物品
+    @Bean
+    public JobDetail goodsJobDetil(){
+
+        return JobBuilder.newJob(GoodsCrawGoodsJob.class)
+                .withIdentity("GoodsCraw")
+                .usingJobData("msg","开启装备物品爬取")
+                .storeDurably()
+                .build();
+    }
+    //调度策略
+    @Bean
+    public Trigger GoodsCrawJobTrigger(){
+        CronScheduleBuilder scheduleBuilder =
+                CronScheduleBuilder.cronSchedule("0 27 12 ? * THU");
+
+        return TriggerBuilder.newTrigger()
+                .forJob(goodsJobDetil())
+                .withIdentity("GoodsCrawJobTask")
+                .withSchedule(scheduleBuilder)
+                .build();
+    }
 }
