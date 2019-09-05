@@ -52,7 +52,11 @@ public class AsyncExecuteThreadPool {
         executor.setQueueCapacity(200);
         executor.setKeepAliveSeconds(60);
         executor.setThreadNamePrefix("gameRecordCrawExecutor-");
-
+        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        executor.setWaitForTasksToCompleteOnShutdown(true);
+        executor.setAwaitTerminationSeconds(60);
+        return executor;
+    }
 
 
     @Bean("taskExecutorGoods")
