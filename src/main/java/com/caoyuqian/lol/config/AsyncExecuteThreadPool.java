@@ -44,6 +44,16 @@ public class AsyncExecuteThreadPool {
         return executor;
     }
 
+    @Bean("gameRecordCrawExecutor")
+    public Executor gameRecordCrawExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(10);
+        executor.setMaxPoolSize(20);
+        executor.setQueueCapacity(200);
+        executor.setKeepAliveSeconds(60);
+        executor.setThreadNamePrefix("gameRecordCrawExecutor-");
+
+
 
     @Bean("taskExecutorGoods")
     public Executor taskExecutorGoods() {
@@ -58,6 +68,5 @@ public class AsyncExecuteThreadPool {
         executor.setAwaitTerminationSeconds(60);
         return executor;
     }
-
 
 }

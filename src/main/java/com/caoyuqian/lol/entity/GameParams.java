@@ -35,4 +35,8 @@ public class GameParams {
      * 游戏时长
      */
     private String gameLength;
+    /**
+     * 游戏模式
+     */
+    private String gameType;
 }

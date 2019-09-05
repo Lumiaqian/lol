@@ -18,10 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 public class Summoner extends Ladder {
 
-    /**
-     * 版本号
-     */
-    private long version;
+
 
     private String summonerId;
     /**
@@ -51,11 +48,11 @@ public class Summoner extends Ladder {
     /**
      * 最近20场突出的英雄
      */
-    private List<MostChampion> champions;
+    //private List<MostChampion> champions;
     /**
      * 最近20场所在的位置
      */
-    private List<PreferredPosition> positions;
+    //private List<PreferredPosition> positions;
     /**
      * 最近20场比赛的查询参数
      */
@@ -72,8 +69,6 @@ public class Summoner extends Ladder {
                 ", totalLose=" + totalLose +
                 ", tierIcon='" + tierIcon + '\'' +
                 ", gas=" + gas +
-                ", champions=" + champions +
-                ", positions=" + positions +
                 ", params=" + params +
                 ", borderImage='" + borderImage + '\'' +
                 ", name='" + name + '\'' +
@@ -90,9 +85,9 @@ public class Summoner extends Ladder {
      */
     private Summoner(Summoner summoner) {
         this.name = summoner.name;
-        this.champions = summoner.champions;
+        //this.champions = summoner.champions;
         this.gas = summoner.gas;
-        this.positions = summoner.positions;
+        //this.positions = summoner.positions;
         this.summonerId = summoner.summonerId;
         this.lp = summoner.lp;
         this.lv = summoner.lv;
@@ -157,7 +152,7 @@ public class Summoner extends Ladder {
             return this;
         }
 
-        public Builder champions(List<MostChampion> champions) {
+        /*public Builder champions(List<MostChampion> champions) {
             summoner.champions = champions;
             return this;
         }
@@ -165,7 +160,7 @@ public class Summoner extends Ladder {
         public Builder positions(List<PreferredPosition> positions) {
             summoner.positions = positions;
             return this;
-        }
+        }*/
 
         public Builder borderImage(String borderImage) {
             summoner.borderImage = borderImage;

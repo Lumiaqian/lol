@@ -3,6 +3,7 @@ package com.caoyuqian.lol.task;
 import com.caoyuqian.lol.craw.GoodsCraw;
 import com.caoyuqian.lol.craw.LadderCraw;
 import com.caoyuqian.lol.craw.SummonerCraw;
+import com.caoyuqian.lol.entity.Game;
 import com.caoyuqian.lol.entity.Ladder;
 import com.caoyuqian.lol.entity.Summoner;
 import com.caoyuqian.lol.entity.goods.Goods;
@@ -38,10 +39,6 @@ public class AsyncExecutorTask {
     @Autowired
     private LadderCraw ladderCraw;
     @Autowired
-    private SummonerService summonerService;
-    @Autowired
-    private SummonerCraw summonerCraw;
-    @Autowired
     private SummonerCrawExecutorTask summonerCrawExecutorTask;
 
     @Autowired
@@ -67,16 +64,16 @@ public class AsyncExecutorTask {
     @Async("taskExecutor")
     public Future<List<Summoner>> doSummonerCrawTask(int index, List<Ladder> ladders) {
         List<Summoner> summoners = new ArrayList<>();
-        String url = "https://www.op.gg/summoner/userName=";
         List<Future<List<Summoner>>> futures = new ArrayList<>();
         long start = System.currentTimeMillis();
         log.info("开始爬取第{}组", index + 1);
         log.info("执行任务: SummonerCrawJob-{}", index + 1);
         Map<Integer, List<Ladder>> map = ladders.stream()
                 .collect(Collectors.groupingBy(ladder -> (ladder.getRanking() - 1) / 5));
-        log.info(map.keySet().toString());
-        map.forEach((k, v) -> {
-            Future<List<Summoner>> future = summonerCrawExecutorTask.doSummonerCrawTask(index, k, v);
+
+        //log.info(map.keySet().toString());
+        map.forEach((k,v) ->{
+            Future<List<Summoner>> future = summonerCrawExecutorTask.doSummonerCrawTask(index,k,v);
             futures.add(future);
         });
         futures.forEach(future -> {
@@ -87,7 +84,10 @@ public class AsyncExecutorTask {
             }
         });
         long end = System.currentTimeMillis();
-        log.info("SummonerCrawJob-{}任务耗时：{}秒", index + 1, (end - start) / 1000);
+
+        log.info("SummonerCrawJob-{}任务summoner的数量：{}",index+1,summoners.size());
+        log.info("SummonerCrawJob-{}任务耗时：{}秒", index+1,(end - start) / 1000);
+
         return new AsyncResult<>(summoners);
     }
 

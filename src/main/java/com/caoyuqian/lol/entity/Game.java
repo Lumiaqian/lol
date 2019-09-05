@@ -25,6 +25,10 @@ public class Game {
 
 
     private String gameId;
+    /**
+     * 游戏模式
+     */
+    private String gameType;
 
     /**
      * 游戏时间
