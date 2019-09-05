@@ -7,5 +7,5 @@ spring:
       repositories:
         type: reactive
 
-
-
+server:
+  port: 8081

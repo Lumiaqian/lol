@@ -14,7 +14,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 @Slf4j
-public class GoodsCrawGoodsJob extends QuartzJobBean {
+public class GoodsCrawJob extends QuartzJobBean {
 
     @Autowired
     private  AsyncExecutorTask asyncExecutorTask;
@@ -50,16 +50,6 @@ public class GoodsCrawGoodsJob extends QuartzJobBean {
         });
 
         goodsCrawService.saveAllGoods(goodsList).subscribe();
-
-
-
-
-
-
-
-
-
-
 
     }
 }
