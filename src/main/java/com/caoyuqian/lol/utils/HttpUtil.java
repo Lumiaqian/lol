@@ -100,7 +100,7 @@ public class HttpUtil {
         connection.header("accept-language","zh-CN,zh;q=0.9");
         connection.header("referer","https://lol.qq.com/data/info-spell.shtml");
         byte[] bytes = connection.execute().bodyAsBytes();
-        return new String(bytes,"GBK");
+        return new String(bytes,"UTF8");
     }
 
 

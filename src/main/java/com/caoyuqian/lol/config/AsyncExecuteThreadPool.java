@@ -43,4 +43,21 @@ public class AsyncExecuteThreadPool {
         executor.setAwaitTerminationSeconds(60);
         return executor;
     }
+
+
+    @Bean("taskExecutorGoods")
+    public Executor taskExecutorGoods() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(12);
+        executor.setMaxPoolSize(45);
+        executor.setQueueCapacity(200);
+        executor.setKeepAliveSeconds(60);
+        executor.setThreadNamePrefix("taskExecutor-goods");
+        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        executor.setWaitForTasksToCompleteOnShutdown(true);
+        executor.setAwaitTerminationSeconds(60);
+        return executor;
+    }
+
+
 }
