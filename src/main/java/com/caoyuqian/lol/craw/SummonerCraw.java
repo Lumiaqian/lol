@@ -36,8 +36,9 @@ import java.util.List;
 public class SummonerCraw {
     private final static Logger log = LoggerFactory.getLogger(SummonerCraw.class);
     public Summoner get(String url, String name) throws IOException {
+        long start = System.currentTimeMillis();
         url = url + name;
-        Document document = HttpUtil.getByHtmlUnit(url);
+        Document document = HttpUtil.get(url);
         log.info(url);
         Elements mostChampionElement = document.select("table.GameAverageStats td.MostChampion li div.Content");
         Elements positionElement = document.select("table.GameAverageStats td.PositionStats ul.Content li");
@@ -92,7 +93,7 @@ public class SummonerCraw {
                     .kda(kda)
                     .build();
             //最近20场发挥最好的英雄
-            mostChampionElement.forEach(element -> {
+            /*mostChampionElement.forEach(element -> {
                 MostChampion champion = MostChampion.builder()
                         .image("Https:"+element.select("div.Image img").attr("src"))
                         .name(element.select("div.Name").text())
@@ -114,13 +115,14 @@ public class SummonerCraw {
                         .winRatio(Integer.parseInt(element.select("span.WinRatio span b").text()))
                         .build();
                 positions.add(position);
-            });
+            });*/
             gameItemWrap.forEach(element -> {
                 GameParams param = GameParams.builder()
                         .gameId(element.select("div.GameItem").attr("data-game-id"))
                         .summonerId(id)
                         .gameTime(Long.parseLong(element.select("div.GameItem").attr("data-game-time")))
                         .gameLength(element.select("div.GameLength").text())
+                        .gameType(element.select("div.GameType").text())
                         .build();
                 params.add(param);
             });
@@ -138,15 +140,17 @@ public class SummonerCraw {
                     .totalLose(totalLose)
                     .winRatio(winRatio)
                     .gas(gas)
-                    .champions(champions)
-                    .positions(positions)
+                    //.champions(champions)
+                    //.positions(positions)
                     .params(params)
                     .build();
             // log.info(summoner.toString());
         } catch (NumberFormatException e) {
             log.error("出现异常：{}",e.getMessage());
-            e.printStackTrace();
+            //e.printStackTrace();
         }
+        long end = System.currentTimeMillis();
+        log.info("SummonerCraw执行时间：{}毫秒",(end-start));
         return summoner;
     }
 
@@ -155,6 +159,10 @@ public class SummonerCraw {
         String url = "https://www.op.gg/summoner/userName=";
         String name = "이인화임";
         Summoner summoner = summonerCraw.get(url,name);
+        log.info(summoner.toString());
+        /*String url1 = "https://www.op.gg/summoner/matches/ajax/averageAndList/startInfo=0&summonerId=35261654&type=total";
+        Document document = HttpUtil.getByHtmlUnit(url1);
+        log.info(document.html());*/
 
     }
 }

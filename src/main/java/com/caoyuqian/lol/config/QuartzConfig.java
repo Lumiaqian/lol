@@ -88,7 +88,7 @@ public class QuartzConfig {
                 .build();
     }
 
-    //@Bean
+    @Bean
     public JobDetail ladderCrawJobDetail() {
         return JobBuilder.newJob(LadderCrawJob.class)
                 .withIdentity("LadderCrawJob")
@@ -97,7 +97,7 @@ public class QuartzConfig {
                 .build();
     }
 
-    //@Bean
+    @Bean
     public Trigger ladderCrawJobTrigger() {
         SimpleScheduleBuilder scheduleBuilder = SimpleScheduleBuilder.simpleSchedule()
                 //设置时间周期单位秒
@@ -170,7 +170,7 @@ public class QuartzConfig {
      * @Description: 爬取召唤师信息任务
      * @Date: 2019/9/4 10:17 上午
      **/
-    @Bean
+    //@Bean
     public JobDetail summonerCrawJobDetail() {
         return JobBuilder.newJob(SummonerCrawJob.class)
                 .withIdentity("SummonerCraw")
@@ -179,7 +179,7 @@ public class QuartzConfig {
                 .build();
     }
 
-    @Bean
+    //@Bean
     public Trigger summonerCrawJobTrigger() {
         SimpleScheduleBuilder scheduleBuilder = SimpleScheduleBuilder.simpleSchedule()
                 //设置时间周期单位秒

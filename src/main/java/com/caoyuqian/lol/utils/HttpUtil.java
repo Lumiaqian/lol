@@ -8,6 +8,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
@@ -23,24 +24,23 @@ import java.util.logging.Level;
  * @date 2019-08-22 10:50
  **/
 public class HttpUtil {
+    public static final Logger log = LoggerFactory.getLogger(HttpUtil.class);
     public static String USER_AGENT = "User-Agent";
     public static String USER_AGENT_VALUE = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101 Firefox/52.0";
     public static Document get(String url) throws IOException {
 
         Connection connection = Jsoup.connect(url);
         connection.header(USER_AGENT,USER_AGENT_VALUE);
-        connection.header("accept-language", "zh-cn");
-        connection.header("Referer", "https://www.baidu.com/")
-        .header("Accept", "*/*")
-        .header("Accept-Encoding", "gzip, deflate")
-        .timeout(5000);
+        connection.header("accept-language", "zh-cn")
+        .timeout(20000);
         return connection.get();
     }
     public static Document getByHtmlUnit(String url) throws IOException {
-        //请求超时时间,默认20秒
-        int timeout = 20000;
-        //等待异步JS执行时间,默认20秒
-        int waitForBackgroundJavaScript = 20000;
+        long start = System.currentTimeMillis();
+        //请求超时时间,默认2秒
+        int timeout = 2000;
+        //等待异步JS执行时间,默认0.5秒
+        int waitForBackgroundJavaScript = 500;
         String result = "";
 
         //设置日志级别，原页面js异常不打印
@@ -62,7 +62,7 @@ public class HttpUtil {
         //是否启用CSS
         webClient.getOptions().setCssEnabled(false);
         //很重要，启用JS
-        webClient.getOptions().setJavaScriptEnabled(true);
+        webClient.getOptions().setJavaScriptEnabled(false);
         //很重要，设置支持AJAX
         webClient.setAjaxController(new NicelyResynchronizingAjaxController());
 
@@ -83,10 +83,11 @@ public class HttpUtil {
         }
         //该方法阻塞线程
         webClient.waitForBackgroundJavaScript(waitForBackgroundJavaScript);
+        long end = System.currentTimeMillis();
 
         result = page.asXml();
         webClient.close();
-
+        log.info("WebClient执行时间：{}秒",(end-start)/1000);
 
         // Jsoup解析处理
         return Jsoup.parse(result, url);

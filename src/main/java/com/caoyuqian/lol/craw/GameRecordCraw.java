@@ -48,22 +48,28 @@ public class GameRecordCraw {
 
         Elements winMapData = document.select("div.Summary div.Result-WIN");
         Elements lossMapData = document.select("div.Summary div.summary-graph");
-        //胜利方团队数据
-        GameMapData winData = GameMapData.builder()
-                .baron(Integer.parseInt(winMapData.select("div.ObjectScore").first().text()))
-                .dragon(Integer.parseInt(winMapData.select("div.ObjectScore").get(1).text()))
-                .tower(Integer.parseInt(winMapData.select("div.ObjectScore").last().text()))
-                .totalKill(Integer.parseInt(lossMapData.select("div.graph--data__left").first().text()))
-                .totalGold(Integer.parseInt(lossMapData.select("div.graph--data__left").get(1).text()))
-                .build();
-        //失利方团队数据
-        GameMapData lossData = GameMapData.builder()
-                .baron(Integer.parseInt(document.select("div.Result-LOSE").select("div.ObjectScore").first().text()))
-                .dragon(Integer.parseInt(document.select("div.Result-LOSE").select("div.ObjectScore").get(1).text()))
-                .tower(Integer.parseInt(document.select("div.Result-LOSE").select("div.ObjectScore").last().text()))
-                .totalKill(Integer.parseInt(lossMapData.select("div.graph--data__right").first().text()))
-                .totalGold(Integer.parseInt(lossMapData.select("div.graph--data__right").get(1).text()))
-                .build();
+        GameMapData winData = new GameMapData();
+        GameMapData lossData = new GameMapData();
+        //非三分钟重开局才有团队数据
+        if (!winMapData.isEmpty()){
+            //胜利方团队数据
+            winData = GameMapData.builder()
+                    .baron(Integer.parseInt(winMapData.select("div.ObjectScore").first().text()))
+                    .dragon(Integer.parseInt(winMapData.select("div.ObjectScore").get(1).text()))
+                    .tower(Integer.parseInt(winMapData.select("div.ObjectScore").last().text()))
+                    .totalKill(Integer.parseInt(lossMapData.select("div.graph--data__left").first().text()))
+                    .totalGold(Integer.parseInt(lossMapData.select("div.graph--data__left").get(1).text()))
+                    .build();
+            //失利方团队数据
+            lossData = GameMapData.builder()
+                    .baron(Integer.parseInt(document.select("div.Result-LOSE").select("div.ObjectScore").first().text()))
+                    .dragon(Integer.parseInt(document.select("div.Result-LOSE").select("div.ObjectScore").get(1).text()))
+                    .tower(Integer.parseInt(document.select("div.Result-LOSE").select("div.ObjectScore").last().text()))
+                    .totalKill(Integer.parseInt(lossMapData.select("div.graph--data__right").first().text()))
+                    .totalGold(Integer.parseInt(lossMapData.select("div.graph--data__right").get(1).text()))
+                    .build();
+        }
+
         winGamers = getGamer(win);
         lossGamers = getGamer(loss);
         HashMap<String, Object> winDir = new HashMap<>(16);
@@ -75,6 +81,7 @@ public class GameRecordCraw {
 
 
         return Game.builder()
+                .gameType(params.getGameType())
                 .win(winDir)
                 .loss(lossDir)
                 .gameId(params.getGameId())
@@ -126,8 +133,11 @@ public class GameRecordCraw {
             //爬取装备
             List<HashMap> items = new ArrayList<>();
             Elements itemElements = element.select("td.Items div.Item");
+            itemElements.select("div.noItem").remove();
+            //log.info(itemElements.html());
             String itemsHtml = itemElements.html();
             List<String> itemHtmls = Arrays.asList(StringUtils.splitByWholeSeparator(itemsHtml, "<img"));
+            //log.info(itemHtmls.toString());
             itemHtmls.forEach(h -> {
                 h = StringUtils.substringBetween(h, "title=\"", "\">");
                 Document d = Jsoup.parse(h);
@@ -136,11 +146,32 @@ public class GameRecordCraw {
 //                item.put(,d.select("span").text());
                 item.put("name", d.select("b").text());
                 item.put("description", d.select("span").first().text());
-                item.put("stats", d.select("span").get(1).text());
-                item.put("Cost", d.select("span").last().text());
+                if (d.select("span").size()>1){
+                    item.put("stats", d.select("span").get(1).text());
+                    item.put("Cost", d.select("span").last().text());
+                }
                 items.add(item);
             });
-            // log.info(items.toString());
+            //log.info(element.select("td.Tier").attr("title"));
+            int lp;
+            if (element.select("td.Tier").attr("title").isEmpty()){
+                log.info("没有排位分数");
+                lp = 0;
+            }else {
+                log.info(element.select("td.Tier").attr("title"));
+                if (StringUtils.substringAfter(StringUtils.substringBetween(element.select("td.Tier").attr("title"), "<br>", " 胜点"),"<br>")==null){
+                    lp = 0;
+                }else {
+                    lp = Integer.parseInt(StringUtils.substringAfter(StringUtils.substringBetween(element.select("td.Tier").attr("title"), "<br>", " 胜点"),"<br>"));
+                }
+
+            }
+            //log.info();
+            //极地大乱斗没有评分
+            Double op = 0.0;
+            if (!element.select("td.OPScore div.Text").isEmpty()){
+                op = Double.parseDouble(element.select("td.OPScore div.Text").text());
+            }
             Gamer gamer = Gamer.builder()
                     .summonerSpells(summonerSpell)
                     .runes(rune)
@@ -148,8 +179,8 @@ public class GameRecordCraw {
                     .level(Integer.parseInt(element.select("td.ChampionImage div.Level").text()))
                     .summonerName(element.select("td.SummonerName a").text())
                     .tier(element.select("td.Tier").text())
-                    .lp(Integer.parseInt(StringUtils.substringBetween(element.select("td.Tier").attr("title"), "r<br>", " 胜点")))
-                    .opScore(Double.parseDouble(element.select("td.OPScore div.Text").text()))
+                    .lp(lp)
+                    .opScore(op)
                     .kda(kda)
                     .championInjury(Integer.parseInt(StringUtils.substringBetween(element.select("td.Damage").attr("title").replaceAll(",", "").replaceAll(" ", ""), "伤害：", "<br>")))
                     .championDamage(Integer.parseInt(StringUtils.substringAfter(element.select("td.Damage").attr("title").replaceAll(",", "").replaceAll(" ", ""), "总额:")))
@@ -165,12 +196,12 @@ public class GameRecordCraw {
 
     public static void main(String[] args) throws IOException {
         String url = "https://www.op.gg/summoner/matches/ajax/detail/";
-        // www.op.gg/summoner/matches/ajax/detail/gameId=3835331879&summonerId=26670323&gameTime=1567103260
+        // www.op.gg/summoner/matches/ajax/detail/gameId=3835331879&summonerId=4673576&gameTime=1567103260
         GameParams params = GameParams.builder()
-                .summonerId("26670323")
+                .summonerId("4673576")
                 .gameTime(1567103260)
                 .gameId("3835331879")
-                .gameLength("20分 12秒")
+                .gameLength("29分 12秒")
                 .build();
         GameRecordCraw gameRecordCraw = new GameRecordCraw();
         Game game = gameRecordCraw.get(url, params);

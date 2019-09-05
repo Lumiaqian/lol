@@ -31,17 +31,14 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-
 public class LolApplicationTests {
 
-    private final static Logger log = LoggerFactory.getLogger(LolApplicationTests.class);
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private LadderCraw ladderCraw;
     @Autowired
@@ -67,21 +64,22 @@ public class LolApplicationTests {
         ladderService.findAll().collectList()
                 .flatMap(ladders -> {
                     if (ladders.size()!=0){
-                        Map<Integer,List<Ladder>> map = ladders.stream()
+                        /*Map<Integer,List<Ladder>> map = ladders.stream()
                                 .collect(Collectors.groupingBy(ladder -> {
                                     return ladder.getRanking()/50;
                                 }));
                         log.info("test  分组：{}",map.size());
-                        log.info(map.get(20).get(0).toString());
-                        try {
-                            Summoner summoner = summonerCraw.get(url,map.get(20).get(0).getName());
-                            log.info(summoner.toString());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        log.info(map.get(20).get(0).toString());*/
+                        Optional<Ladder> optional=
+                                ladders.stream().max(Comparator.comparingLong(Ladder::getVersion));
+                        System.out.println(optional.get().toString());
                     }
                     return Mono.just("test  查询数据库中的ladder:"+ladders.toString());
-                }).subscribe(log::info);
+                }).subscribe(System.out::println);
+    }
+    @Test
+    public void testMongo(){
+        ladderService.findLatelyVersion().subscribe(System.out::println);
     }
 
 
@@ -111,10 +109,6 @@ public class LolApplicationTests {
 
     }
 
-    @Test
-    public void testMongo() throws IOException {
-       statisticsChampionService.saveAll(statisticsChampionCraw.get()).subscribe();
-    }
 
     @Test
     public void testRESTClient(){
