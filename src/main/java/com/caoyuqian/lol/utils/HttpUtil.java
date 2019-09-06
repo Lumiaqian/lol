@@ -32,7 +32,7 @@ public class HttpUtil {
         Connection connection = Jsoup.connect(url);
         connection.header(USER_AGENT,USER_AGENT_VALUE);
         connection.header("accept-language", "zh-cn")
-        .timeout(20000);
+        .timeout(50000);
         return connection.get();
     }
     public static Document getByHtmlUnit(String url) throws IOException {

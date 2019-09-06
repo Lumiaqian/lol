@@ -39,4 +39,9 @@ public class GameParams {
      * 游戏模式
      */
     private String gameType;
+
+    /**
+     * 编号
+     */
+    private int index;
 }
