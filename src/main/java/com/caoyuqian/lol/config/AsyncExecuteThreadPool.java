@@ -20,8 +20,8 @@ public class AsyncExecuteThreadPool {
     @Bean("taskExecutor")
     public Executor taskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(15);
-        executor.setMaxPoolSize(30);
+        executor.setCorePoolSize(30);
+        executor.setMaxPoolSize(60);
         executor.setQueueCapacity(200);
         executor.setKeepAliveSeconds(60);
         executor.setThreadNamePrefix("taskExecutor-");
@@ -47,8 +47,8 @@ public class AsyncExecuteThreadPool {
     @Bean("gameRecordCrawExecutor")
     public Executor gameRecordCrawExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(10);
-        executor.setMaxPoolSize(20);
+        executor.setCorePoolSize(30);
+        executor.setMaxPoolSize(60);
         executor.setQueueCapacity(200);
         executor.setKeepAliveSeconds(60);
         executor.setThreadNamePrefix("gameRecordCrawExecutor-");

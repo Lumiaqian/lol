@@ -72,4 +72,8 @@ public class SummonerService {
         Query query = new Query().with(sort).limit(1);
         return template.findOne(query, Summoner.class);
     }
+
+    public Flux<Summoner> findAll(){
+        return repository.findAll();
+    }
 }

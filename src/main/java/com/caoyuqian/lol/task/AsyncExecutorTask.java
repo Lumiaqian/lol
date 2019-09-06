@@ -4,6 +4,7 @@ import com.caoyuqian.lol.craw.GoodsCraw;
 import com.caoyuqian.lol.craw.LadderCraw;
 import com.caoyuqian.lol.craw.SummonerCraw;
 import com.caoyuqian.lol.entity.Game;
+import com.caoyuqian.lol.entity.GameParams;
 import com.caoyuqian.lol.entity.Ladder;
 import com.caoyuqian.lol.entity.Summoner;
 import com.caoyuqian.lol.entity.goods.Goods;
@@ -40,6 +41,8 @@ public class AsyncExecutorTask {
     private LadderCraw ladderCraw;
     @Autowired
     private SummonerCrawExecutorTask summonerCrawExecutorTask;
+    @Autowired
+    private GameRecordCrawExecutorTask gameTask;
 
     @Autowired
     private GoodsCraw goodsCraw;
@@ -91,6 +94,30 @@ public class AsyncExecutorTask {
         return new AsyncResult<>(summoners);
     }
 
+    @Async("taskExecutor")
+    public Future<List<Game>> doGameRecordCrawTask(int index, List<GameParams> params){
+        long start = System.currentTimeMillis();
+        log.info("开始爬取第{}组", index);
+        log.info("执行任务: GameRecordCrawJob-{}", Thread.currentThread().getName());
+        List<Game> games = new ArrayList<>();
+        List<Future<List<Game>>> futures = new ArrayList<>();
+        Map<Integer,List<GameParams>> map = params.stream()
+                .collect(Collectors.groupingBy(o -> (o.getIndex()-1)/30));
+        map.forEach((k,v)->{
+            Future<List<Game>> future = gameTask.gameRecordCrawTask(index,k,v);
+            futures.add(future);
+        });
+        futures.forEach(f->{
+            try {
+                games.addAll(f.get());
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        });
+        long end = System.currentTimeMillis();
+        log.info("GameRecordCrawJob-{}任务耗时：{}秒", index,(end - start) / 1000);
+        return new AsyncResult<>(games);
+    }
 
     @Async("taskExecutorGoods")
     public Future<List<Goods>> doGoodsCrawTask(int index, int end) throws IOException {

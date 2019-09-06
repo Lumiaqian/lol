@@ -35,13 +35,13 @@ public class Game {
      */
     private long gameTime;
     /**
-     * 胜利方玩家数据：包括玩家数据和红蓝方
+     * 一方玩家数据：包括玩家数据和红蓝方以及输赢
      */
-    private HashMap<String,Object> win;
+    private HashMap<String,Object> one;
     /**
-     * s失利方玩家：包括玩家数据和红蓝方
+     * 另一方玩家：包括玩家数据和红蓝方以及输赢
      */
-    private HashMap<String,Object> loss;
+    private HashMap<String,Object> other;
     /**
      * 游戏时长
      */

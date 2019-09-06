@@ -4,6 +4,7 @@ import com.caoyuqian.lol.craw.LadderCraw;
 import com.caoyuqian.lol.craw.StatisticsChampionCraw;
 import com.caoyuqian.lol.craw.StatisticsTierCraw;
 import com.caoyuqian.lol.craw.SummonerCraw;
+import com.caoyuqian.lol.entity.GameParams;
 import com.caoyuqian.lol.entity.Ladder;
 import com.caoyuqian.lol.entity.Summoner;
 import com.caoyuqian.lol.model.Response;
@@ -60,27 +61,43 @@ public class LolApplicationTests {
 
     @Test
     public void testSummoner(){
-        String url = "https://www.op.gg/summoner/userName=";
-        ladderService.findAll().collectList()
-                .flatMap(ladders -> {
-                    if (ladders.size()!=0){
+        //String url = "https://www.op.gg/summoner/userName=";
+        summonerService.findAll().collectList()
+                .flatMap(summoners -> {
+                    if (summoners.size()!=0){
                         /*Map<Integer,List<Ladder>> map = ladders.stream()
                                 .collect(Collectors.groupingBy(ladder -> {
                                     return ladder.getRanking()/50;
                                 }));
                         log.info("test  分组：{}",map.size());
                         log.info(map.get(20).get(0).toString());*/
-                        Optional<Ladder> optional=
+                       /* Optional<Ladder> optional=
                                 ladders.stream().max(Comparator.comparingLong(Ladder::getVersion));
-                        System.out.println(optional.get().toString());
+                        System.out.println(optional.get().toString());*/
+                        List<GameParams> gameParams = new ArrayList<>();
+                        summoners.forEach(summoner -> {
+                            gameParams.addAll(summoner.getParams());
+                        });
+                        System.out.println("共有"+gameParams.size()+"场游戏记录");
+                        List<GameParams> finalGameParams = gameParams.
+                                stream()
+                                .collect(Collectors.collectingAndThen
+                                        (Collectors.toCollection(
+                                                () -> new TreeSet<>(
+                                                        Comparator.comparing(
+                                                                GameParams::getGameId)))
+                                                ,ArrayList::new));
+                        System.out.println("去重还剩："+finalGameParams.size()+"场游戏记录");
                     }
-                    return Mono.just("test  查询数据库中的ladder:"+ladders.toString());
-                }).subscribe(System.out::println);
+                    System.out.println("test");
+                    return Mono.just("test  查询数据库中的ladder:"+summoners.toString());
+                }).subscribe();
     }
     @Test
     public void testMongo(){
         ladderService.findLatelyVersion().subscribe(System.out::println);
     }
+
 
 
     @Test

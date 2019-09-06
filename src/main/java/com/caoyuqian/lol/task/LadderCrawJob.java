@@ -1,6 +1,8 @@
 package com.caoyuqian.lol.task;
 
+import com.caoyuqian.lol.craw.SummonerCraw;
 import com.caoyuqian.lol.entity.Game;
+import com.caoyuqian.lol.entity.GameParams;
 import com.caoyuqian.lol.entity.Ladder;
 import com.caoyuqian.lol.entity.Summoner;
 import com.caoyuqian.lol.service.LadderService;
@@ -13,12 +15,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -40,6 +41,11 @@ public class LadderCrawJob extends QuartzJobBean {
     private LadderService ladderService;
     @Autowired
     private SummonerService summonerService;
+    @Autowired
+    private GameRecordCrawExecutorTask gameRecordCrawExecutorTask;
+    @Autowired
+    private SummonerCrawExecutorTask summonerCrawExecutorTask;
+
     private final static Logger log = LoggerFactory.getLogger(LadderCrawJob.class);
 
     @Override
@@ -75,14 +81,16 @@ public class LadderCrawJob extends QuartzJobBean {
             long endOne = System.currentTimeMillis();
             log.info("LadderCrawJob任务耗时：{}秒",(endOne-start)/1000);
 
-
+            //爬取召唤师信息
             List<Summoner> summoners = summonerCraw(ladders);
             log.info("召唤师数量：{}",summoners.size());
             //存入数据库
             summonerService.saveAll(summoners).subscribe(log::info);
 
+            //爬取召唤师的游戏记录
+            List<Game> games = gameRecordCraw(summoners);
             long end = System.currentTimeMillis();
-            log.info("LadderCrawJob+SummonerCrawJob任务耗时：{}秒",(end-start)/1000);
+            log.info("LadderCrawJob+SummonerCrawJob+GameRecordCrawJob任务耗时：{}秒",(end-start)/1000);
         } catch (Exception e) {
             log.error("出现异常：{}",e.getMessage());
 
@@ -119,8 +127,57 @@ public class LadderCrawJob extends QuartzJobBean {
         log.info("SummonerCrawJob任务总耗时：{}秒", (end - start) / 1000);
         return summoners;
     }
-    private List<Game> GameRecordCraw(List<Summoner> summoners){
+     /**
+       * @Param:
+       * @return:
+       * @Author: qian
+       * @Description: 多线程爬取游戏记录
+       * @Date: 2019/9/6 1:13 下午
+      **/
+    private List<Game> gameRecordCraw(List<Summoner> summoners){
+        long start = System.currentTimeMillis();
         List<Game> gameList = new ArrayList<>();
+        List<Future<List<Game>>> futures = new ArrayList<>();
+        List<GameParams> gameParams = new ArrayList<>();
+        summoners.forEach(summoner -> {
+            gameParams.addAll(summoner.getParams());
+        });
+        log.info("共有{}场游戏记录",gameParams.size());
+        List<GameParams> finalGameParams = gameParams.
+                stream()
+                .collect(Collectors.collectingAndThen
+                        (Collectors.toCollection(
+                                () -> new TreeSet<>(
+                                        Comparator.comparing(
+                                                GameParams::getGameId)))
+                                ,ArrayList::new));
+        log.info("去重还剩：{}场游戏记录",finalGameParams.size());
+        AtomicInteger index = new AtomicInteger(1);
+        finalGameParams.forEach(gameParam ->{
+            gameParam.setIndex(index.get());
+            index.getAndIncrement();
+        });
+        Map<Integer,List<GameParams>> hashMap = finalGameParams.
+                stream().
+                collect(Collectors.groupingBy
+                        (o -> (o.getIndex()-1)/300));
+        log.info("共有{}组",hashMap.size());
+        //爬取游戏记录
+        hashMap.forEach((k,v) ->{
+            Future<List<Game>> future = task.doGameRecordCrawTask(k,v);
+            futures.add(future);
+        });
+        List<Game> games = new ArrayList<>();
+        futures.forEach(f->{
+            try {
+                games.addAll(f.get());
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        });
+        log.info("一共爬取{}场游戏记录",games.size());
+        long end = System.currentTimeMillis();
+        log.info("GameRecordCrawJob任务总耗时：{}秒", (end - start) / 1000);
         return gameList;
     }
 }

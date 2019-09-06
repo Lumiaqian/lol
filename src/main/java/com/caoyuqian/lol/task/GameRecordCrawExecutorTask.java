@@ -32,19 +32,37 @@ public class GameRecordCrawExecutorTask {
     private static final Logger log = LoggerFactory.getLogger(GameRecordCrawExecutorTask.class);
 
     @Async("gameRecordCrawExecutor")
-    public Future<List<Game>> gameRecordCrawTask(Summoner summoner){
+    public Future<List<Game>> gameRecordCrawTask(int index,List<GameParams> params){
         long start = System.currentTimeMillis();
-        log.info("------开始爬取{}的游戏记录------",summoner.getName());
-        String gameRecordUrl = "https://www.op.gg/summoner/matches/ajax/detail/";
-        List<GameParams> params = summoner.getParams();
+        log.info("开始爬取第{}组", index);
+        String url = "https://www.op.gg/summoner/matches/ajax/detail/";
         List<Game> gameList = new ArrayList<>();
-        params.forEach(param -> {
-            log.info(param.toString());
+        params.forEach(e -> {
             try {
-                Game game = gameRecordCraw.get(gameRecordUrl,param);
+                Game game = gameRecordCraw.get(url,e);
                 gameList.add(game);
-            } catch (IOException e) {
-                log.info(e.getMessage());
+            } catch (IOException ex) {
+                log.error("GameRecordCrawExecutorTask:出现异常:{}",ex.getMessage());
+                //ex.printStackTrace();
+            }
+        });
+        long end = System.currentTimeMillis();
+        log.info("------GameRecordCrawTask任务耗时：{}毫秒------",(end-start));
+        return new AsyncResult<>(gameList);
+    }
+    @Async("gameRecordCrawExecutor")
+    public Future<List<Game>> gameRecordCrawTask(int level,int index,List<GameParams> params){
+        long start = System.currentTimeMillis();
+        log.info("开始爬取第{}层-第{}", level,index);
+        String url = "https://www.op.gg/summoner/matches/ajax/detail/";
+        List<Game> gameList = new ArrayList<>();
+        params.forEach(e -> {
+            try {
+                Game game = gameRecordCraw.get(url,e);
+                gameList.add(game);
+            } catch (IOException ex) {
+                log.error("GameRecordCrawExecutorTask:出现异常:{}",ex.getMessage());
+                //ex.printStackTrace();
             }
         });
         long end = System.currentTimeMillis();

@@ -43,8 +43,8 @@ public class SummonerCrawExecutorTask {
         List<Summoner> summoners = new ArrayList<>();
         String url = "https://www.op.gg/summoner/userName=";
         long start = System.currentTimeMillis();
-        log.info("------开始爬取第{}层，{}组------",level+1,index+1);
-        log.info("执行任务: SummonerCrawJob-{}-{}",level+1,index+1);
+        log.info("------开始爬取第{}层，{}组------",level+1,index);
+        log.info("执行任务: SummonerCrawJob-{}-{}",level+1,index);
         ladders.forEach(ladder -> {
             try {
                 Summoner summoner = summonerCraw.get(url,ladder.getName());
@@ -54,7 +54,7 @@ public class SummonerCrawExecutorTask {
             }
         });
         //开始爬取游戏记录
-        log.info("需要爬取的游戏记录的次数：{}",summoners.size()*20);
+        /*log.info("需要爬取的游戏记录的次数：{}",summoners.size()*20);
         List<Future<List<Game>>> futures = new ArrayList<>();
         summoners.forEach(summoner -> {
             Future<List<Game>> future = gameRecordCrawExecutorTask.gameRecordCrawTask(summoner);
@@ -72,10 +72,15 @@ public class SummonerCrawExecutorTask {
                 e.printStackTrace();
             }
         });
-        log.info("总共爬取游戏记录：{}",gameList.size());
+        log.info("总共爬取游戏记录：{}",gameList.size());*/
         long end = System.currentTimeMillis();
-        log.info("------SummonerCrawTask-{}-{}+GameRecordCrawTask任务耗时：{}秒------",level+1,index+1,(end-start)/1000);
+        log.info("------SummonerCrawTask-{}-{}+GameRecordCrawTask任务耗时：{}秒------",level+1,index,(end-start)/1000);
         // cdl.countDown();
         return new AsyncResult<>(summoners);
+    }
+    @Async("summonerCrawExecutor")
+    public Future<List<Game>> doGameRecordCrawTask(int index,List<Summoner> summoners){
+        List<Game> games = new ArrayList<>();
+        return new AsyncResult<>(games);
     }
 }
