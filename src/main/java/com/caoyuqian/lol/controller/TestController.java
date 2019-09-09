@@ -3,6 +3,8 @@ package com.caoyuqian.lol.controller;
 import com.caoyuqian.lol.craw.HeroCraw;
 import com.caoyuqian.lol.craw.StatisticsChampionCraw;
 import com.caoyuqian.lol.craw.StatisticsTierCraw;
+import com.caoyuqian.lol.craw.SummonerChampionsCraw;
+import com.caoyuqian.lol.entity.ChampionsData;
 import com.caoyuqian.lol.entity.Game;
 import com.caoyuqian.lol.entity.GameParams;
 import com.caoyuqian.lol.model.StatisticsChampion;
@@ -17,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -56,6 +59,8 @@ public class TestController {
     private GameRecordCrawExecutorTask task;
     @Autowired
     private AsyncExecutorTask asyncExecutorTask;
+    @Autowired
+    private SummonerChampionsCraw championsCraw;
 
     private final static Logger log = LoggerFactory.getLogger(TestController.class);
 
@@ -132,5 +137,10 @@ public class TestController {
                     }
                     return Mono.just("test  查询数据库中的ladder:" + summoners.toString());
                 });
+    }
+    @GetMapping("champions/{name}")
+    public Flux<List<ChampionsData>> championsDataFlux(@PathVariable("name")String name) throws IOException {
+        String url = "https://www.op.gg/summoner/champions/userName=";
+        return Flux.just(championsCraw.get(url,name));
     }
 }
