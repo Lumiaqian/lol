@@ -4,7 +4,6 @@ import com.caoyuqian.lol.model.Response;
 import com.caoyuqian.lol.service.LadderService;
 import com.caoyuqian.lol.service.StatisticsChampionService;
 import com.caoyuqian.lol.service.StatisticsTierService;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +15,12 @@ import reactor.core.publisher.Mono;
  * @version V1.0
  * @Title: ApiController
  * @Package: com.caoyuqian.lol.controller
- * @Description: TOTO
+ * @Description: 查询统计信息api
  * @date 2019-08-30 11:31
  **/
 @RestController
 @RequestMapping("api")
-public class ApiController {
+public class StatisticsController {
 
     @Autowired
     private LadderService ladderService;
@@ -30,8 +29,15 @@ public class ApiController {
     @Autowired
     private StatisticsChampionService statisticsChampionService;
 
-    private final static Logger log = LoggerFactory.getLogger(ApiController.class);
+    private final static Logger log = LoggerFactory.getLogger(StatisticsController.class);
 
+     /**
+       * @Param:
+       * @return: Mono
+       * @Author: qian
+       * @Description: 获取段位统计数据
+       * @Date: 2019/9/10 10:35 上午
+      **/
     @GetMapping("statistics/tier")
     public Mono<Response> getTiers() {
         return statisticsTierService
@@ -70,6 +76,13 @@ public class ApiController {
                 })
                 ;
     }
+     /**
+       * @Param: pageNum pageSize
+       * @return: Mono
+       * @Author: qian
+       * @Description: 获取英雄统计数据
+       * @Date: 2019/9/10 10:34 上午
+      **/
     @GetMapping("statistics/champion/page")
     public Mono<Response> getChampions(@RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
                                        @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize){
@@ -98,6 +111,13 @@ public class ApiController {
                 })
                 ;
     }
+     /**
+       * @Param: pageNum pageSize
+       * @return: Mono
+       * @Author: qian
+       * @Description: 获取天梯排行榜数据
+       * @Date: 2019/9/10 10:33 上午
+      **/
     @GetMapping("ladder/page")
     public Mono<Response> getLadderByPage(@RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
                                           @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize){
@@ -114,4 +134,7 @@ public class ApiController {
                 })
                 ;
     }
+
+
+
 }

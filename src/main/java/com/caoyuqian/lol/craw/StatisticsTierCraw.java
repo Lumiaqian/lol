@@ -22,7 +22,7 @@ import java.util.List;
  * @version V1.0
  * @Title: StatisticsTierCraw
  * @Package: com.caoyuqian.lol.craw
- * @Description: TOTO
+ * @Description: 爬取段位信息
  * @date 2019-08-27 16:07
  **/
 @Component

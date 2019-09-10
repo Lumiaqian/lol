@@ -2,7 +2,6 @@ package com.caoyuqian.lol.craw;
 
 import com.caoyuqian.lol.entity.Ladder;
 import com.caoyuqian.lol.utils.HttpUtil;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
