@@ -1,12 +1,14 @@
 package com.caoyuqian.lol.service;
 
-import com.caoyuqian.lol.entity.Ladder;
 import com.caoyuqian.lol.entity.Summoner;
 import com.caoyuqian.lol.repository.SummonerRepository;
-import lombok.extern.slf4j.Slf4j;
+import com.mongodb.client.result.DeleteResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -44,22 +46,7 @@ public class SummonerService {
                 .saveAll(summonerList)
                 .collectList()
                 .flatMap(summoners -> Mono.just("保存第一版本的召唤师数据")));
-        /*return repository.findAll()
-                .collectList()
-                .flatMap(summoners1 -> {
-                    if (summoners1.size() <= 0){
-                       return repository.saveAll(summoners).collectList()
-                               .flatMap(summoners2 -> Mono.just("直接保存！"));
-                    }else {
-                        return  Mono.just("先删除再保存")
-                                .doFirst(()->repository.deleteAll().subscribe())
-                                .doFinally(signalType -> repository.saveAll(summoners).subscribe());
-                    }
-                });*/
     }
-   /* public Flux<Summoner> saveAll(List<Summoner> summoners){
-        return repository.saveAll(summoners);
-    }*/
     /**
      * @Param:
      * @return: Mono
@@ -75,5 +62,39 @@ public class SummonerService {
 
     public Flux<Summoner> findAll(){
         return repository.findAll();
+    }
+     /**
+       * @Param:
+       * @return: flux
+       * @Author: qian
+       * @Description: 查询数据库中最新版的韩服前一千名的召唤师的数据
+       * @Date: 2019/9/10 11:23 上午
+      **/
+    public Flux<Summoner> findLatelyVersionSummoners(int pageNum,int pageSize) {
+        Sort sort = new Sort(Sort.Direction.DESC, "version");
+        Pageable pageable = PageRequest.of(pageNum,pageSize,sort);
+        Query query = new Query().with(pageable);
+        return template.find(query,Summoner.class);
+    }
+    /**
+     * @Param:
+     * @return: mono
+     * @Author: qian
+     * @Description: 根据玩家游戏内名称查询改召唤师的数据
+     * @Date: 2019/9/10 11:23 上午
+     **/
+    public Mono<Summoner> findLatelyVersionSummonerByName(String name) {
+        Sort sort = new Sort(Sort.Direction.DESC, "version");
+        Query query = new Query(Criteria.where("name").is(name)).with(sort);
+        return template.findOne(query,Summoner.class);
+    }
+
+    public Mono<DeleteResult> deleteOldVersion() {
+        return findLatelyVersion().flatMap(summoner -> {
+            long version = summoner.getVersion();
+            Query query = new Query(Criteria.where("version").lt(version));
+            return template.remove(query,Summoner.class);
+        }).defaultIfEmpty(DeleteResult.unacknowledged());
+
     }
 }

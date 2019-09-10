@@ -95,7 +95,7 @@ public class LolApplicationTests {
     }
     @Test
     public void testMongo(){
-        ladderService.findLatelyVersion().subscribe(System.out::println);
+        summonerService.deleteOldVersion().subscribe(System.out::println);
     }
 
 
