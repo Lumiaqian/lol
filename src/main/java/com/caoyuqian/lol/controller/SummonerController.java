@@ -1,12 +1,18 @@
 package com.caoyuqian.lol.controller;
 
+import com.caoyuqian.lol.craw.SummonerChampionsCraw;
+import com.caoyuqian.lol.entity.ChampionsData;
 import com.caoyuqian.lol.model.Response;
 import com.caoyuqian.lol.service.SummonerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.io.IOException;
+import java.util.List;
 
 /**
  * @author qian
@@ -24,6 +30,8 @@ public class SummonerController {
 
     @Autowired
     private SummonerService summonerService;
+    @Autowired
+    private SummonerChampionsCraw championsCraw;
 
     @GetMapping("summoner/{name}")
     public Mono<Response<Object>> getSummonerByName(@PathVariable("name") String name) {
@@ -55,5 +63,14 @@ public class SummonerController {
                           .data(summoners)
                           .build());
               });
+    }
+    @GetMapping("summoner/champions/{name}")
+    public Mono<Response> championsDataFlux(@PathVariable("name")String name) throws IOException {
+        String url = "https://www.op.gg/summoner/champions/userName=";
+        List<ChampionsData> championsDataList = championsCraw.get(url,name);
+        if (championsDataList==null || championsDataList.size()==0){
+            return Mono.just(Response.builder().msg("无数据！").code(1).build());
+        }
+        return Mono.just(Response.builder().code(0).msg("获取该召唤师的英雄数据成功！").data(championsDataList).build());
     }
 }

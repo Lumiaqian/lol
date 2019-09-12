@@ -24,6 +24,8 @@ public class StatisticsChampion {
 
     @Id
     private String id;
+
+    private long version;
     /**
      * 排名
      */
