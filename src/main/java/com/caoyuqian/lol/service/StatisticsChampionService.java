@@ -4,6 +4,7 @@ import com.caoyuqian.lol.model.StatisticsChampion;
 import com.caoyuqian.lol.repository.StatisticsChampionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -22,6 +23,8 @@ import java.util.List;
 public class StatisticsChampionService {
     @Autowired
     private StatisticsChampionRepository repository;
+    @Autowired
+    private ReactiveMongoTemplate template;
 
     public Flux<StatisticsChampion> saveAll(List<StatisticsChampion> statisticsChampions){
         return repository

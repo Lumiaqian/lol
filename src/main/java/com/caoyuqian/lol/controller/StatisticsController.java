@@ -35,32 +35,18 @@ public class StatisticsController {
        * @Param:
        * @return: Mono
        * @Author: qian
-       * @Description: 获取段位统计数据
+       * @Description: 获取最新段位统计数据
        * @Date: 2019/9/10 10:35 上午
       **/
     @GetMapping("statistics/tier")
     public Mono<Response> getTiers() {
-        return statisticsTierService
-                .findAll()
-                .collectList()
-                .flatMap(statisticsTiers -> {
-                    if (statisticsTiers.size() == 0) {
-                        return Mono
-                                .just(Response
-                                        .builder()
-                                        .code(1)
-                                        .msg("数据为空！")
-                                        .build());
+        return statisticsTierService.findLatelyVersionStatisticsTier()
+                .collectList().flatMap(statisticsTiers -> {
+                    if (statisticsTiers.size() == 0){
+                        return Mono.just(Response.builder().msg("无数据！").code(1).build());
                     }
-                    return Mono
-                            .just(Response
-                                    .builder()
-                                    .msg("获取成功！")
-                                    .code(0)
-                                    .data(statisticsTiers)
-                                    .build());
-                })
-                ;
+                    return Mono.just(Response.builder().code(0).msg("获取成功！").data(statisticsTiers).build());
+                });
     }
 
     @GetMapping("statistics/champion")
@@ -86,6 +72,9 @@ public class StatisticsController {
     @GetMapping("statistics/champion/page")
     public Mono<Response> getChampions(@RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
                                        @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize){
+
+
+
         return statisticsChampionService.findAllByPage(pageNum,pageSize)
                 .collectList()
                 .flatMap(statisticsChampions -> {

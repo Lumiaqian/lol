@@ -31,6 +31,13 @@ public class SummonerService {
     @Autowired
     private ReactiveMongoTemplate template;
 
+     /**
+       * @Param:
+       * @return:
+       * @Author: qian
+       * @Description: 存入数据库
+       * @Date: 2019/9/11 3:31 下午
+      **/
     public Mono<String> saveAll(List<Summoner> summonerList){
 
         summonerList.forEach(summoner -> summoner.setVersion(1));
@@ -88,7 +95,13 @@ public class SummonerService {
         Query query = new Query(Criteria.where("name").is(name)).with(sort);
         return template.findOne(query,Summoner.class);
     }
-
+     /**
+       * @Param:
+       * @return: mono
+       * @Author: qian
+       * @Description: 删除 除最新版本外的数据
+       * @Date: 2019/9/11 10:02 上午
+      **/
     public Mono<DeleteResult> deleteOldVersion() {
         return findLatelyVersion().flatMap(summoner -> {
             long version = summoner.getVersion();

@@ -23,6 +23,8 @@ public class StatisticsTier {
 
     @Id
     private String id;
+
+    private long version;
     /**
      * 段位
      */
